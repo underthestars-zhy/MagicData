@@ -22,12 +22,22 @@ extension Mirror {
                let type = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "type"
                })?.value as? MagicalType {
-                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: mirror.children.first(where: { (label: String?, value: Any) in
-                    label == "wrappedValue"
-                })?.value as? Magical)
+                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: getValueFromHost(mirror: mirror))
             } else {
                 return nil
             }
         }
+    }
+
+    func getValueFromHost(mirror: Mirror) -> Magical? {
+        guard let value = mirror.children.first(where: { (label: String?, value: Any) in
+            label == "hostValue"
+        })?.value else { return nil }
+
+        let _mirror = Mirror(reflecting: value)
+
+        return (_mirror.children.first { lable, value in
+            lable == "value"
+        }?.value as? Magical?)?.flatMap { $0 }
     }
 }

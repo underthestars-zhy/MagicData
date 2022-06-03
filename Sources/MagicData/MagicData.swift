@@ -29,6 +29,27 @@ public class MagicData {
 
     public func object<Value: MagicObject>(of: Value.Type) throws -> [Value] {
         let table = Table("\(type(of: Value.self))")
+
+//        return try db.prepare(table).map { row in
+//            let model = Value()
+//            let mirror = model.createMirror()
+//            for expression in mirror.createExpresses() {
+//                if let keyPath = mirror.descendant(expression.name) as? PartialKeyPath<Value> {
+//                    switch expression.type {
+//                    case .string:
+//                        if expression.option {
+//                            let value = row[Expression<String?>(expression.name)]
+//                            model[keyPath: keyPath] = value
+//                        } else {
+//                            let value = row[Expression<String>(expression.name)]
+//                        }
+//                    }
+//                }
+//            }
+//
+//            return model
+//        }
+
         return []
     }
 }

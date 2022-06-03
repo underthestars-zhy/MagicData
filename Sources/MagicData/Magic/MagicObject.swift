@@ -18,7 +18,7 @@ extension _MagicObject {
 }
 
 public class MagicObject: NSObject, _MagicObject {
-    override public init() {
+    required override public init() {
         super.init()
     }
 }

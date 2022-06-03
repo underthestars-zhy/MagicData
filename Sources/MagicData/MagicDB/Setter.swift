@@ -10,6 +10,7 @@ import SQLite
 
 extension MagicData {
     func createSetters(of object: MagicObject) throws -> [Setter] {
+        print(object.createMirror().createExpresses())
         return try object.createMirror().createExpresses().compactMap({ express in
             switch express.type {
             case .string:

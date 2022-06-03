@@ -15,49 +15,76 @@ protocol _MagicValue {
 }
 
 @propertyWrapper struct PrimaryMagicValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
-    public var wrappedValue: Value
+    public var wrappedValue: Value {
+        get {
+            hostValue.value ?? .deafultPrimaryValue
+        }
+
+        set {
+            hostValue.value = newValue
+        }
+    }
+    internal let hostValue: MagicalValueHost<Value>
     internal let primary: Bool = true
     internal let type: MagicalType
 
     public init() {
-        self.wrappedValue = Value.deafultPrimaryValue
+        self.hostValue = .init(value: Value.deafultPrimaryValue)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value) {
-        self.wrappedValue = wrappedValue
+        self.hostValue = .init(value: wrappedValue)
         self.type = Value.type
     }
 }
 
 @propertyWrapper public struct MagicValue<Value: Magical>: _MagicValue {
-    public var wrappedValue: Value
+    public var wrappedValue: Value {
+        get {
+            hostValue.value ?? .defualtValue
+        }
+
+        set {
+            hostValue.value = newValue
+        }
+    }
+    internal let hostValue: MagicalValueHost<Value>
     internal let primary: Bool = false
     internal let type: MagicalType
 
     public init() {
-        self.wrappedValue = Value.defualtValue
+        self.hostValue = .init(value: Value.defualtValue)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value) {
-        self.wrappedValue = wrappedValue
+        self.hostValue = .init(value: wrappedValue)
         self.type = Value.type
     }
 }
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical> {
-    public var wrappedValue: Value?
+    public var wrappedValue: Value? {
+        get {
+            hostValue.value
+        }
+
+        set {
+            hostValue.value = newValue
+        }
+    }
+    internal let hostValue: MagicalValueHost<Value>
     internal let primary: Bool = false
     internal let type: MagicalType
 
     public init() {
-        wrappedValue = nil
+        hostValue = .init(value: nil)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value?, primary: Bool = false) {
-        self.wrappedValue = wrappedValue
+        self.hostValue = .init(value: wrappedValue)
         self.type = Value.type
     }
 }
