@@ -12,4 +12,5 @@ struct MagicExpress {
     let primary: Bool
     let option: Bool
     let type: MagicalType
+    let value: Magical?
 }

@@ -14,7 +14,10 @@ final class MagicDataTests: XCTestCase {
         let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
         print(url)
         let magic = try await MagicData(path: url)
-        let test = TestModel(name: "hi")
+        var test = TestModel(name: "hi")
         try await magic.update(test)
+//
+//        test.petName = "az"
+//        try await magic.update(test)
     }
 }

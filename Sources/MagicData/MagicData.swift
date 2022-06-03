@@ -20,6 +20,24 @@ public class MagicData {
 
     public func update(_ object: MagicObject) throws {
         try createTable(object)
+        // TODO: try updateTable(object)
+
+        let table = Table(tableName(of: object))
+
+        try db.run(table.insert(or: .replace, object.createMirror().createExpresses().compactMap({ express in
+            switch express.type {
+            case .string:
+                if express.option {
+                    return (Expression<String?>(express.name) <- (express.value as? MagicStringConvert)?.convertToString())
+                } else {
+                    if let value = (express.value as? MagicStringConvert)?.convertToString() {
+                        return (Expression<String?>(express.name) <- value)
+                    } else {
+                        throw MagicError.missValue
+                    }
+                }
+            }
+        })))
     }
 }
 

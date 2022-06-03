@@ -9,4 +9,5 @@ import Foundation
 
 public enum MagicError: Error {
     case cannotCreateFile
+    case missValue
 }

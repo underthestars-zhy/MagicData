@@ -22,7 +22,9 @@ extension Mirror {
                let type = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "type"
                })?.value as? MagicalType {
-                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type)
+                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: mirror.children.first(where: { (label: String?, value: Any) in
+                    label == "wrappedValue"
+                })?.value as? Magical)
             } else {
                 return nil
             }
