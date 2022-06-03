@@ -58,7 +58,7 @@ extension MagicData {
     }
 
     func tableName(of object: MagicObject) -> String {
-        type(of: object).tableName
+        return "\(type(of: object))"
     }
 
     func addToTableInfo(_ object: MagicObject) throws {

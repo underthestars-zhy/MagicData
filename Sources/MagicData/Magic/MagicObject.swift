@@ -7,17 +7,18 @@
 
 import Foundation
 
-public protocol MagicObject {
-    static var tableName: String { get }
+protocol _MagicObject {
     func createMirror() -> Mirror
 }
 
-extension MagicObject {
+extension _MagicObject {
     func createMirror() -> Mirror {
         Mirror(reflecting: self)
     }
+}
 
-    static var tableName: String {
-        "\(Self.self)"
+public class MagicObject: NSObject, _MagicObject {
+    override public init() {
+        super.init()
     }
 }
