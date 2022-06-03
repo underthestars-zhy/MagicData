@@ -22,3 +22,9 @@ public class MagicObject: NSObject, _MagicObject {
         super.init()
     }
 }
+
+extension NSObject {
+    subscript(checkedMirrorDescendant key: String) -> Any {
+        return Mirror(reflecting: self).descendant(key)!
+    }
+}

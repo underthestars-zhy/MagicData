@@ -43,4 +43,14 @@ final class MagicDataTests: XCTestCase {
             }
         }
     }
+
+    func testGet() async throws {
+        let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
+        print(url)
+        let magic = try await MagicData(path: url)
+
+        let objects = try await magic.object(of: TestModel.self)
+
+        XCTAssertEqual(objects.count, 12)
+    }
 }
