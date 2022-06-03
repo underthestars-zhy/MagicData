@@ -53,10 +53,20 @@ extension MagicData {
                 }
             }
         })
+
+        try addToTableInfo(object)
     }
 
     func tableName(of object: MagicObject) -> String {
         type(of: object).tableName
+    }
+
+    func addToTableInfo(_ object: MagicObject) throws {
+        let info = Table("0Table_Info")
+        let tableName = Expression<String>("table_name")
+        let version = Expression<Int>("version")
+
+        try db.run(info.insert(tableName <- self.tableName(of: object), version <- 0))
     }
 }
 

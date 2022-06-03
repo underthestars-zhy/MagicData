@@ -1,7 +1,7 @@
 import Foundation
 import SQLite
 
-@MainActor
+@MagicActor
 public class MagicData {
     let db: Connection
 
@@ -38,3 +38,9 @@ actor MagicDBHoster {
         }
     }
 }
+
+@globalActor public actor MagicActor {
+    public static let shared = MagicActor()
+    private init() { }
+}
+
