@@ -20,7 +20,7 @@ protocol _MagicValue {
     internal let type: MagicalType
 
     public init() {
-        self.wrappedValue = Value.deafult
+        self.wrappedValue = Value.deafultPrimaryValue
         self.type = Value.type
     }
 
@@ -34,6 +34,11 @@ protocol _MagicValue {
     public var wrappedValue: Value
     internal let primary: Bool = false
     internal let type: MagicalType
+
+    public init() {
+        self.wrappedValue = Value.defualtValue
+        self.type = Value.type
+    }
 
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue

@@ -8,13 +8,13 @@ class TestModel: MagicObject {
 
     @OptionMagicValue var petName: String?
 
-    init(name: String) {
+    convenience init(name: String) {
+        self.init()
         self.name = name
     }
 }
 
 final class MagicDataTests: XCTestCase {
-
     func testName() async throws {
         let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
         print(url)
@@ -28,9 +28,9 @@ final class MagicDataTests: XCTestCase {
         let magic = try await MagicData(path: url)
         let test = TestModel(name: "hi")
         try await magic.update(test)
-//
-//        test.petName = "az"
-//        try await magic.update(test)
+
+        test.petName = "az"
+        try await magic.update(test)
     }
 
     func testAsyncAdd() async throws  {

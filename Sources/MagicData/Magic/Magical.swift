@@ -8,5 +8,6 @@
 import Foundation
 
 public protocol Magical {
+    static var defualtValue: Self { get }
     static var type: MagicalType { get }
 }

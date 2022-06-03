@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol MagicalPrimaryValue {
-    static var deafult: Self { get }
+    static var deafultPrimaryValue: Self { get }
 }

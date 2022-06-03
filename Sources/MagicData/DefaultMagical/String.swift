@@ -8,7 +8,11 @@
 import Foundation
 
 extension String: Magical, MagicalPrimaryValue, MagicStringConvert {
-    static public var deafult: String {
+    public static var defualtValue: String {
+        ""
+    }
+
+    public static var deafultPrimaryValue: String {
         UUID().uuidString
     }
     
