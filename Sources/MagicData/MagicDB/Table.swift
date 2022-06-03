@@ -39,6 +39,7 @@ extension MagicData {
         if try tableExit(object.name) { return }
         let mirror = object.createMirror()
         let expressions = mirror.createExpresses()
+        print(expressions)
     }
 }
 

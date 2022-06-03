@@ -11,40 +11,49 @@ protocol _MagicValue {
     associatedtype Value: Magical
     var wrappedValue: Value { get set }
     var primary: Bool { get }
+    var type: MagicalType { get }
 }
 
 @propertyWrapper struct PrimaryMagicValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
     public var wrappedValue: Value
     internal let primary: Bool = true
+    internal let type: MagicalType
 
     public init() {
         self.wrappedValue = Value.deafult
+        self.type = Value.type
     }
 
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
+        self.type = Value.type
     }
 }
 
 @propertyWrapper public struct MagicValue<Value: Magical>: _MagicValue {
     public var wrappedValue: Value
     internal let primary: Bool = false
+    internal let type: MagicalType
 
     public init(wrappedValue: Value) {
         self.wrappedValue = wrappedValue
+        self.type = Value.type
     }
 }
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical> {
     public var wrappedValue: Value?
     internal let primary: Bool = false
+    internal let type: MagicalType
 
     public init() {
         wrappedValue = nil
+        self.type = Value.type
     }
 
     public init(wrappedValue: Value?, primary: Bool = false) {
         self.wrappedValue = wrappedValue
+        self.type = Value.type
     }
 }
 
