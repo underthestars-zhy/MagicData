@@ -36,10 +36,27 @@ extension MagicData {
     }
 
     func createTable(_ object: MagicObject) throws {
-        if try tableExit(object.name) { return }
+        if try tableExit(tableName(of: object)) { return }
         let mirror = object.createMirror()
         let expressions = mirror.createExpresses()
-        print(expressions)
+        let table = Table(tableName(of: object))
+
+        try db.run(table.create(ifNotExists: true) { t in
+            for expression in expressions {
+                switch expression.type {
+                case .string:
+                    if expression.option {
+                        t.column(Expression<String?>(expression.name))
+                    } else {
+                        t.column(Expression<String>(expression.name), primaryKey: expression.primary)
+                    }
+                }
+            }
+        })
+    }
+
+    func tableName(of object: MagicObject) -> String {
+        type(of: object).tableName
     }
 }
 

@@ -8,16 +8,16 @@
 import Foundation
 
 public protocol MagicObject {
-    var name: String { get }
+    static var tableName: String { get }
     func createMirror() -> Mirror
 }
 
 extension MagicObject {
-    var name: String {
-        "\(Self.self)"
+    func createMirror() -> Mirror {
+        Mirror(reflecting: self)
     }
 
-    func createMirror() -> Mirror {
-        return Mirror(reflecting: self)
+    static var tableName: String {
+        "\(Self.self)"
     }
 }

@@ -11,7 +11,6 @@ extension Mirror {
     func createExpresses() -> [MagicExpress] {
         self.children.compactMap { child in
             let mirror = Mirror(reflecting: child.value)
-            print("\(mirror.subjectType)")
             if (
                 "\(mirror.subjectType)".hasPrefix("PrimaryMagicValue") ||
                 "\(mirror.subjectType)".hasPrefix("MagicValue") ||
@@ -23,7 +22,7 @@ extension Mirror {
                let type = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "type"
                })?.value as? MagicalType {
-                return MagicExpress(name: child.label ?? "_error_", primary: primary, type: type)
+                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type)
             } else {
                 return nil
             }

@@ -3,7 +3,9 @@ import XCTest
 
 struct TestModel: MagicObject {
     @PrimaryMagicValue var id: String
+
     @MagicValue var name: String
+
     @OptionMagicValue var petName: String?
 }
 

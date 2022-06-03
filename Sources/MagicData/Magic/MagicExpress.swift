@@ -10,5 +10,6 @@ import Foundation
 struct MagicExpress {
     let name: String
     let primary: Bool
+    let option: Bool
     let type: MagicalType
 }
