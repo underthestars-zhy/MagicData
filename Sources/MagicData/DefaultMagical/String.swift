@@ -7,10 +7,14 @@
 
 import Foundation
 
-extension String: Magical, MagicalPrimaryValue {
+extension String: Magical, MagicalPrimaryValue, MagicStringConvert {
     static public var deafult: String {
         UUID().uuidString
     }
     
     static public var type: MagicalType = .string
+
+    public func convertToString() -> String {
+        return self
+    }
 }

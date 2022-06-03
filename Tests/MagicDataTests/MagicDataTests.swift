@@ -2,7 +2,7 @@ import XCTest
 @testable import MagicData
 
 struct TestModel: MagicObject {
-    @MagicPrimaryValue var id: String
+    @PrimaryMagicValue var id: String
     @MagicValue var name: String
     @OptionMagicValue var petName: String?
 

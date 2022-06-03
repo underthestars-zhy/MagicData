@@ -38,8 +38,7 @@ extension MagicData {
     func createTable(_ object: MagicObject) throws {
         if try tableExit(object.name) { return }
         let mirror = object.createMirror()
-
-        
+        let expressions = mirror.createExpresses()
     }
 }
 

@@ -13,7 +13,7 @@ protocol _MagicValue {
     var primary: Bool { get }
 }
 
-@propertyWrapper public struct MagicPrimaryValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
+@propertyWrapper struct PrimaryMagicValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
     public var wrappedValue: Value
     internal let primary: Bool = true
 

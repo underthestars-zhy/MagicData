@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol Magical: Codable {
+public protocol Magical {
     static var type: MagicalType { get }
 }
