@@ -99,9 +99,9 @@ struct Job: MagicalCodable {
 
 Some value can be used in the `@PrimaryMagicValue`:
 
-**String** has a defualt **UUID String** value
-**UUID** has a default **UUID** value
-**Int** has auto increase ability.
+**String** has a defualt **UUID String** value. </b>
+**UUID** has a default **UUID** value. </b>
+**Int** has auto increase ability. </b>
 
 ## Add/Update
 
