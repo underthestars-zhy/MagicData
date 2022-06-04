@@ -2,7 +2,7 @@ import XCTest
 @testable import MagicData
 
 struct TestModel: MagicObject {
-    @PrimaryMagicValue var id: String
+    @PrimaryMagicValue var id: UUID
 
     @MagicValue var name: String
 
@@ -63,6 +63,6 @@ final class MagicDataTests: XCTestCase {
             print(object.name)
         }
 
-        XCTAssertEqual(objects.count, 12)
+        XCTAssertEqual(objects.count, 11)
     }
 }
