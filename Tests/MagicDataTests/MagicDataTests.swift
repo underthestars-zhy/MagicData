@@ -7,6 +7,7 @@ struct TestModel: MagicObject {
     @MagicValue var name: String
     @MagicValue var age: Int
 
+    @OptionMagicValue var school: Data?
     @OptionMagicValue var petName: String?
     @OptionMagicValue var hight: Double?
 
@@ -31,6 +32,7 @@ final class MagicDataTests: XCTestCase {
         let magic = try await MagicData(path: url)
         let test = TestModel(name: "hi")
         test.age = 1
+        test.school = "WWDC School".data(using: .utf8)
         try await magic.update(test)
 
         let test1 = test
@@ -63,6 +65,9 @@ final class MagicDataTests: XCTestCase {
 
         for object in objects {
             print(object.name)
+            if let data = object.school {
+                print(String(data: data, encoding: .utf8) ?? "")
+            }
         }
 
         XCTAssertEqual(objects.count, 11)

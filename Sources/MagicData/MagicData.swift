@@ -69,6 +69,16 @@ public class MagicData {
                     } else {
                         throw MagicError.connetConvertToMagicConvert
                     }
+                case .data:
+                    if let convert = host.type as? MagicDataConvert.Type {
+                        if expression.option {
+                            host.set(value: convert.create(row[Expression<Data?>(expression.name)]))
+                        } else {
+                            host.set(value: convert.create(row[Expression<Data>(expression.name)]))
+                        }
+                    } else {
+                        throw MagicError.connetConvertToMagicConvert
+                    }
                 }
             }
 
