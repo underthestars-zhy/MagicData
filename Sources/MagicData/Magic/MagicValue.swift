@@ -9,7 +9,7 @@ import Foundation
 
 protocol _MagicValue {
     associatedtype Value: Magical
-    var wrappedValue: Value { get set }
+    var wrappedValue: Value { get nonmutating set }
     var primary: Bool { get }
     var type: MagicalType { get }
 }
@@ -17,14 +17,14 @@ protocol _MagicValue {
 @propertyWrapper struct PrimaryMagicValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
         get {
-            hostValue.value ?? .deafultPrimaryValue
+            (hostValue.value as? Value) ?? .deafultPrimaryValue
         }
 
-        set {
+        nonmutating set {
             hostValue.value = newValue
         }
     }
-    internal let hostValue: MagicalValueHost<Value>
+    internal let hostValue: MagicalValueHost
     internal let primary: Bool = true
     internal let type: MagicalType
 
@@ -42,14 +42,14 @@ protocol _MagicValue {
 @propertyWrapper public struct MagicValue<Value: Magical>: _MagicValue {
     public var wrappedValue: Value {
         get {
-            hostValue.value ?? .defualtValue
+            (hostValue.value as? Value) ?? .defualtValue
         }
 
-        set {
+        nonmutating set {
             hostValue.value = newValue
         }
     }
-    internal let hostValue: MagicalValueHost<Value>
+    internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
 
@@ -67,14 +67,14 @@ protocol _MagicValue {
 @propertyWrapper public struct OptionMagicValue<Value: Magical> {
     public var wrappedValue: Value? {
         get {
-            hostValue.value
+            hostValue.value as? Value
         }
 
-        set {
+        nonmutating set {
             hostValue.value = newValue
         }
     }
-    internal let hostValue: MagicalValueHost<Value>
+    internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
 

@@ -32,7 +32,7 @@ final class MagicDataTests: XCTestCase {
         let test = TestModel(name: "hi")
         try await magic.update(test)
 
-        var test1 = test
+        let test1 = test
 
         test1.petName = "az"
         try await magic.update(test)

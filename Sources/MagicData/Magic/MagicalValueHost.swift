@@ -7,14 +7,15 @@
 
 import Foundation
 
-class MagicalValueHost<Value>: NSObject where Value: Magical {
-    var value: Value?
+class MagicalValueHost: NSObject {
+    var value: Any?
 
     func set(value _value: Any?) {
-        
+
     }
 
-    init(value: Value?) {
+    init(value: Any?) {
         self.value = value
     }
 }
+
