@@ -75,22 +75,24 @@ print(test.name) // "hi"
 
 Now we support theses:
 
-`String` will be stored as `Text` in the database. </b>
-`UUID` will be stored as `Text` in the database. </b>
-`Int` will be stored as `Int` in the database. </b>
-`Double` will be stored as `Real` in the database. </b>
-`Data` will be stored as `Blob` in the database. </b>
-`Codable` will be stored as `Blob` in the database. </b>
+`String` will be stored as `Text` in the database. </br>
+`UUID` will be stored as `Text` in the database. </br>
+`Int` will be stored as `Int` in the database. </br>
+`Double` will be stored as `Real` in the database. </br>
+`Data` will be stored as `Blob` in the database. </br>
+`Codable` will be stored as `Blob` in the database. </br>
 
 ### Points of Codable
 
-First of all, we cannot store `Codable`, but it can be stored as `MagicalCodable`.
+First of all, we cannot store `Codable`, but it can be stored as `MagicalCodable`. `MagicalCodable` is a variant of `Codable`.
 
 ```swift
 struct Job: MagicalCodable {
     let title: String
     let salary: Int
 }
+
+@OptionMagicValue var job: Job?
 ```
 
 `MagicalCodable` doesn't have defualt value, which means if you use it in the `@MagicValue`, and doesn't init it. You code will **crash**
@@ -99,9 +101,9 @@ struct Job: MagicalCodable {
 
 Some value can be used in the `@PrimaryMagicValue`:
 
-**String** has a defualt **UUID String** value. </b>
-**UUID** has a default **UUID** value. </b>
-**Int** has auto increase ability. </b>
+**String** has a defualt **UUID String** value. </br>
+**UUID** has a default **UUID** value. </br>
+**Int** has auto increase ability. </br>
 
 ## Add/Update
 
