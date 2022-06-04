@@ -7,6 +7,7 @@ struct TestModel: MagicObject {
     @MagicValue var name: String
     @MagicValue var age: Int
     @MagicValue var friendNames: [String]
+    @MagicValue var teachersNamesAndJob: [String : String]
 
     @OptionMagicValue var school: Data?
     @OptionMagicValue var petName: String?
@@ -14,7 +15,7 @@ struct TestModel: MagicObject {
     @OptionMagicValue var job: Job?
 
     var customString: String {
-        "My ID: \(id), name: \(name) " + ("\(String(describing: job))") + " friends: \(friendNames)"
+        "My ID: \(id), name: \(name) " + ("\(String(describing: job))") + " friends: \(friendNames)" + " teachers: \(teachersNamesAndJob)"
     }
 
     init() {}
@@ -22,6 +23,7 @@ struct TestModel: MagicObject {
     init(name: String) {
         self.name = name
         self.friendNames = []
+        self.teachersNamesAndJob = [:]
     }
 }
 
@@ -54,6 +56,7 @@ final class MagicDataTests: XCTestCase {
         test1.name = "hello"
         test1.hight = 2.3
         test1.job = .init(title: "CES", salary: 10000)
+        test1.teachersNamesAndJob = ["Mrs. Joe" : "Math"]
         try await magic.update(test)
 
         XCTAssertEqual(test.petName, "az")

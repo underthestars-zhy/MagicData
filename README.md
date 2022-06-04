@@ -81,6 +81,8 @@ Now we support theses:
 `Double` will be stored as `Real` in the database. </br>
 `Data` will be stored as `Blob` in the database. </br>
 `Codable` will be stored as `Blob` in the database. </br>
+`Arrary` will be stored as `Blob` in the database. </br>
+`Dictionary` will be stored as `Blob` in the database. </br>
 
 ### Points of Codable
 
@@ -96,6 +98,11 @@ struct Job: MagicalCodable {
 ```
 
 `MagicalCodable` doesn't have defualt value, which means if you use it in the `@MagicValue`, and doesn't init it. You code will **crash**
+
+### Ponints of Arrary & Dictionary
+
+We only support the `Arrary` or `Dictionary` which conforms to the `Codable`.
+`Arrary` or `Dictionary` has defualt value, but doesn't be supposed to use.
 
 ### Primary
 
