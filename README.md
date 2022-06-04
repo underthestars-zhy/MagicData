@@ -89,7 +89,7 @@ Some value can be used in the `@PrimaryMagicValue`:
 **UUID** has a default **UUID** value
 **Int** has auto increase ability.
 
-** Add/Update
+## Add/Update
 
 ```swift
 magic.update(object)
@@ -98,7 +98,7 @@ magic.update(object)
 If object don't have primary value, every `update` is like `add`.
 If object has primary, `update` or `add` will base on whether it has been stored in the database.
 
-** Query All
+## Query All
 
 ```swift
 magic.object(of: TestModel.self)
