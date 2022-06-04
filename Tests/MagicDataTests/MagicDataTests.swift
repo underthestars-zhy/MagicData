@@ -6,6 +6,7 @@ struct TestModel: MagicObject {
 
     @MagicValue var name: String
     @MagicValue var age: Int
+    @MagicValue var friendNames: [String]
 
     @OptionMagicValue var school: Data?
     @OptionMagicValue var petName: String?
@@ -13,13 +14,14 @@ struct TestModel: MagicObject {
     @OptionMagicValue var job: Job?
 
     var customString: String {
-        "My ID: \(id), name: \(name)" + ("\(String(describing: job))")
+        "My ID: \(id), name: \(name) " + ("\(String(describing: job))") + " friends: \(friendNames)"
     }
 
     init() {}
 
     init(name: String) {
         self.name = name
+        self.friendNames = []
     }
 }
 
@@ -43,6 +45,7 @@ final class MagicDataTests: XCTestCase {
         let test = TestModel(name: "hi")
         test.age = 1
         test.school = "WWDC School".data(using: .utf8)
+        test.friendNames.append("wwdc")
         try await magic.update(test)
 
         let test1 = test
