@@ -22,6 +22,7 @@ protocol _MagicValue {
 
         nonmutating set {
             hostValue.value = newValue
+            hostValue.auto = false
         }
     }
     internal let hostValue: MagicalValueHost
@@ -31,6 +32,7 @@ protocol _MagicValue {
     public init() {
         self.hostValue = .init(value: Value.deafultPrimaryValue, type: Value.self)
         self.type = Value.type
+        self.hostValue.auto = true
     }
 
     public init(wrappedValue: Value) {

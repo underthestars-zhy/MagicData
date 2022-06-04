@@ -26,7 +26,9 @@ extension MagicData {
                 if express.option {
                     return (Expression<Int?>(express.name) <- (express.value as? MagicIntConvert)?.convert())
                 } else {
-                    if let value = (express.value as? MagicIntConvert)?.convert() {
+                    if express.auto {
+                        return nil
+                    } else if let value = (express.value as? MagicIntConvert)?.convert() {
                         return (Expression<Int?>(express.name) <- value)
                     } else {
                         throw MagicError.missValue

@@ -22,7 +22,7 @@ extension Mirror {
                let type = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "type"
                })?.value as? MagicalType {
-                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: getValueFromHost(mirror: mirror))
+                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: getValueFromHost(mirror: mirror), auto:  mirror.getHost()?.auto ?? false)
             } else {
                 return nil
             }

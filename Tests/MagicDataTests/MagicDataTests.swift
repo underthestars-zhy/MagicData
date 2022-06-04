@@ -28,6 +28,7 @@ final class MagicDataTests: XCTestCase {
         print(url)
         let magic = try await MagicData(path: url)
         let test = TestModel(name: "hi")
+        test.id = 15
         try await magic.update(test)
 
         let test1 = test

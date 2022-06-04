@@ -10,6 +10,7 @@ import Foundation
 class MagicalValueHost: NSObject {
     var value: Any?
     let type: Magical.Type
+    var auto = false
 
     func set(value _value: Any?) {
         value = _value

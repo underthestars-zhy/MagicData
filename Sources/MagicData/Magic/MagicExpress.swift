@@ -13,4 +13,5 @@ struct MagicExpress {
     let option: Bool
     let type: MagicalType
     let value: Magical?
+    let auto: Bool
 }
