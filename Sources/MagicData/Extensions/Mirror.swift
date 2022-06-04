@@ -40,4 +40,10 @@ extension Mirror {
             lable == "value"
         }?.value as? Magical?)?.flatMap { $0 }
     }
+
+    func getHost() -> MagicalValueHost? {
+        return self.children.first(where: { (label: String?, value: Any) in
+            label == "hostValue"
+        })?.value as? MagicalValueHost
+    }
 }

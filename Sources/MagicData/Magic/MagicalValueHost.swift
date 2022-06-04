@@ -11,7 +11,7 @@ class MagicalValueHost: NSObject {
     var value: Any?
 
     func set(value _value: Any?) {
-
+        value = _value
     }
 
     init(value: Any?) {

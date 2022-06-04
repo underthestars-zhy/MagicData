@@ -35,6 +35,7 @@ final class MagicDataTests: XCTestCase {
         let test1 = test
 
         test1.petName = "az"
+        test1.name = "hello"
         try await magic.update(test)
 
         XCTAssertEqual(test.petName, "az")
@@ -57,6 +58,10 @@ final class MagicDataTests: XCTestCase {
         let magic = try await MagicData(path: url)
 
         let objects = try await magic.object(of: TestModel.self)
+
+        for object in objects {
+            print(object.name)
+        }
 
         XCTAssertEqual(objects.count, 12)
     }

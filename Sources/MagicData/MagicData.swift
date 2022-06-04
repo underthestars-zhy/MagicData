@@ -36,6 +36,16 @@ public class MagicData {
             for expression in mirror.createExpresses() {
                 let keyPath = \Value.[checkedMirrorDescendant: expression.name] as PartialKeyPath<Value>
                 let valueMirror = Mirror(reflecting: model[keyPath: keyPath])
+                guard let host = valueMirror.getHost() else { throw MagicError.missHost }
+
+                switch expression.type {
+                case .string:
+                    if expression.option {
+                        host.set(value: row[Expression<String?>(expression.name)])
+                    } else {
+                        host.set(value: row[Expression<String>(expression.name)])
+                    }
+                }
             }
 
             return model
