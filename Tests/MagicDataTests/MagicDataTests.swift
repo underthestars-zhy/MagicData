@@ -11,6 +11,10 @@ struct TestModel: MagicObject {
     @OptionMagicValue var petName: String?
     @OptionMagicValue var hight: Double?
 
+    var customString: String {
+        "My ID: \(id), name: \(name)"
+    }
+
     init() {}
 
     init(name: String) {
@@ -64,7 +68,7 @@ final class MagicDataTests: XCTestCase {
         let objects = try await magic.object(of: TestModel.self)
 
         for object in objects {
-            print(object.name)
+            print(object.customString)
             if let data = object.school {
                 print(String(data: data, encoding: .utf8) ?? "")
             }
