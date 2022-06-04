@@ -1,15 +1,18 @@
 import XCTest
 @testable import MagicData
 
-class TestModel: MagicObject {
+struct TestModel: MagicObject {
     @PrimaryMagicValue var id: String
 
     @MagicValue var name: String
 
     @OptionMagicValue var petName: String?
 
-    convenience init(name: String) {
-        self.init()
+    init() {
+
+    }
+
+    init(name: String) {
         self.name = name
     }
 }
@@ -29,8 +32,12 @@ final class MagicDataTests: XCTestCase {
         let test = TestModel(name: "hi")
         try await magic.update(test)
 
-        test.petName = "az"
+        var test1 = test
+
+        test1.petName = "az"
         try await magic.update(test)
+
+        XCTAssertEqual(test.petName, "az")
     }
 
     func testAsyncAdd() async throws  {

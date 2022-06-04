@@ -35,7 +35,7 @@ public class MagicData {
             let mirror = model.createMirror()
             for expression in mirror.createExpresses() {
                 let keyPath = \Value.[checkedMirrorDescendant: expression.name] as PartialKeyPath<Value>
-                print(keyPath)
+                let valueMirror = Mirror(reflecting: model[keyPath: keyPath])
             }
 
             return model

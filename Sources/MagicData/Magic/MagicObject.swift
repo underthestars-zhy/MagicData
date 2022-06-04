@@ -7,23 +7,18 @@
 
 import Foundation
 
-protocol _MagicObject {
+public protocol MagicObject {
     func createMirror() -> Mirror
+    subscript(checkedMirrorDescendant key: String) -> Any { get }
+
+    init()
 }
 
-extension _MagicObject {
+extension MagicObject {
     func createMirror() -> Mirror {
         Mirror(reflecting: self)
     }
-}
 
-public class MagicObject: NSObject, _MagicObject {
-    required override public init() {
-        super.init()
-    }
-}
-
-extension NSObject {
     subscript(checkedMirrorDescendant key: String) -> Any {
         return Mirror(reflecting: self).descendant(key)!
     }
