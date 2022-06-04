@@ -10,9 +10,10 @@ struct TestModel: MagicObject {
     @OptionMagicValue var school: Data?
     @OptionMagicValue var petName: String?
     @OptionMagicValue var hight: Double?
+    @OptionMagicValue var job: Job?
 
     var customString: String {
-        "My ID: \(id), name: \(name)"
+        "My ID: \(id), name: \(name)" + ("\(String(describing: job))")
     }
 
     init() {}
@@ -20,6 +21,11 @@ struct TestModel: MagicObject {
     init(name: String) {
         self.name = name
     }
+}
+
+struct Job: MagicalCodable {
+    let title: String
+    let salary: Int
 }
 
 final class MagicDataTests: XCTestCase {
@@ -44,6 +50,7 @@ final class MagicDataTests: XCTestCase {
         test1.petName = "az"
         test1.name = "hello"
         test1.hight = 2.3
+        test1.job = .init(title: "CES", salary: 10000)
         try await magic.update(test)
 
         XCTAssertEqual(test.petName, "az")

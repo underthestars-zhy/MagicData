@@ -16,7 +16,7 @@ extension Data: Magical, MagicDataConvert {
         }
     }
 
-    public static var defualtValue: Self {
+    public static var defualtValue: Self? {
         Data()
     }
 

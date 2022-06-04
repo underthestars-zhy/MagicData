@@ -44,7 +44,7 @@ protocol _MagicValue {
 @propertyWrapper public struct MagicValue<Value: Magical>: _MagicValue {
     public var wrappedValue: Value {
         get {
-            (hostValue.value as? Value) ?? .defualtValue
+            (hostValue.value as? Value) ?? .defualtValue!
         }
 
         nonmutating set {

@@ -16,7 +16,7 @@ extension Double: Magical, MagicDoubleConvert {
         }
     }
 
-    public static var defualtValue: Self {
+    public static var defualtValue: Self? {
         0
     }
     

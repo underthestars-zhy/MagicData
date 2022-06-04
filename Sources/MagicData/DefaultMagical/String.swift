@@ -16,7 +16,7 @@ extension String: Magical, MagicalPrimaryValue, MagicStringConvert {
         }
     }
 
-    public static var defualtValue: String {
+    public static var defualtValue: String? {
         ""
     }
 

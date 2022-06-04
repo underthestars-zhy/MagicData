@@ -16,7 +16,7 @@ extension Int: Magical, MagicalPrimaryValue, MagicIntConvert {
         }
     }
 
-    public static var defualtValue: Int {
+    public static var defualtValue: Int? {
         0
     }
 

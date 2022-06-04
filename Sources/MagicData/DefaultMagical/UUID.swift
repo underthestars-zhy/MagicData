@@ -16,7 +16,7 @@ extension UUID: Magical, MagicalPrimaryValue, MagicStringConvert {
         }
     }
 
-    public static var defualtValue: UUID {
+    public static var defualtValue: UUID? {
         UUID()
     }
 

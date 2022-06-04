@@ -14,7 +14,7 @@ let magic = try awiat MagicData() // This will create a database at the app's do
 let magic try await MagicData(path: URL(fileURLWithPath: "").path) // This will create a database at your custom path
 ```
 
-** MagicObject
+## MagicObject
 
 **MagicObject** is like the menaing of the table in sqlite, but it is more powerful. **MagicObject** is supposed to be a `struct`. But if you want to sync the non-magical value in the instance you can choose the `class`.
 
@@ -43,7 +43,7 @@ struct TestModel: MagicObject {
 
 All **MagicObject** need a line `init() {}`.
 If you want to use primary value to query the data or update the data you need to set the `@PrimaryMagicValue`. All the **PrimaryMagicValue**s have a unique defualt value.
-**MagicValue** can save all the `Magical` value which it isn't option. And all the **MagicValue** have the same defualt value. But you shoudn't use them. It just for the `init() {}` line.
+**MagicValue** can save all the `Magical` value which it isn't option. And all the **MagicValue** have the same defualt value. But you shoudn't use them. It just for the `init() {}` line. If you use the default value in a inproper way, this will cause crash.
 **OptionMagicValue** like the **MagicValue**, but it can store the option value. It has a defualt value `nil`.
 
 Although `TestModel` is a sturct but if you copy it, and change it, the value will change in the original instance too.
@@ -80,6 +80,20 @@ Now we support theses:
 `Int` will be stored as `Int` in the database.
 `Double` will be stored as `Real` in the database.
 `Data` will be stored as `Blob` in the database.
+`Codable` will be stored as `Blob` in the database.
+
+### Points of Codable
+
+First of all, we cannot store `Codable`, but it can be stored as `MagicalCodable`.
+
+```swift
+struct Job: MagicalCodable {
+    let title: String
+    let salary: Int
+}
+```
+
+`MagicalCodable` doesn't have defualt value, which means if you use it in the `@MagicValue`, and doesn't init it. You code will **crash**
 
 ### Primary
 
