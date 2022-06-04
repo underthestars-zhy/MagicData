@@ -75,12 +75,12 @@ print(test.name) // "hi"
 
 Now we support theses:
 
-`String` will be stored as `Text` in the database.
-`UUID` will be stored as `Text` in the database.
-`Int` will be stored as `Int` in the database.
-`Double` will be stored as `Real` in the database.
-`Data` will be stored as `Blob` in the database.
-`Codable` will be stored as `Blob` in the database.
+`String` will be stored as `Text` in the database. </b>
+`UUID` will be stored as `Text` in the database. </b>
+`Int` will be stored as `Int` in the database. </b>
+`Double` will be stored as `Real` in the database. </b>
+`Data` will be stored as `Blob` in the database. </b>
+`Codable` will be stored as `Blob` in the database. </b>
 
 ### Points of Codable
 
