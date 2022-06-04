@@ -100,7 +100,7 @@ If object has primary, `update` or `add` will base on whether it has been stored
 
 ** Query All
 
-``swift
+```swift
 magic.object(of: TestModel.self)
 ```
 
