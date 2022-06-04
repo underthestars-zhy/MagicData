@@ -69,7 +69,7 @@ test2.name = "hello"
 print(test.name) // "hi"
 ```
 
-** Magical
+## Magical
 
 **Magical**s are kinds of values that can be stored in the database.
 
