@@ -2,11 +2,13 @@ import XCTest
 @testable import MagicData
 
 struct TestModel: MagicObject {
-    @PrimaryMagicValue var id: Int
+    @PrimaryMagicValue var id: String
 
     @MagicValue var name: String
+    @MagicValue var age: Int
 
     @OptionMagicValue var petName: String?
+    @OptionMagicValue var hight: Double?
 
     init() {}
 
@@ -28,13 +30,14 @@ final class MagicDataTests: XCTestCase {
         print(url)
         let magic = try await MagicData(path: url)
         let test = TestModel(name: "hi")
-        test.id = 15
+        test.age = 1
         try await magic.update(test)
 
         let test1 = test
 
         test1.petName = "az"
         test1.name = "hello"
+        test1.hight = 2.3
         try await magic.update(test)
 
         XCTAssertEqual(test.petName, "az")

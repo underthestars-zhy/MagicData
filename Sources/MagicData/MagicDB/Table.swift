@@ -60,6 +60,12 @@ extension MagicData {
                             t.column(Expression<Int>(expression.name), primaryKey: false)
                         }
                     }
+                case .double:
+                    if expression.option {
+                        t.column(Expression<Double?>(expression.name))
+                    } else {
+                        t.column(Expression<Double>(expression.name), primaryKey: expression.primary)
+                    }
                 }
             }
         })

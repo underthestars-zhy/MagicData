@@ -34,6 +34,16 @@ extension MagicData {
                         throw MagicError.missValue
                     }
                 }
+            case .double:
+                if express.option {
+                    return (Expression<Double?>(express.name) <- (express.value as? MagicDoubleConvert)?.convert())
+                } else {
+                    if let value = (express.value as? MagicDoubleConvert)?.convert() {
+                        return (Expression<Double?>(express.name) <- value)
+                    } else {
+                        throw MagicError.missValue
+                    }
+                }
             }
         })
     }
