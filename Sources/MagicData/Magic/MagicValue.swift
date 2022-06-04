@@ -29,12 +29,12 @@ protocol _MagicValue {
     internal let type: MagicalType
 
     public init() {
-        self.hostValue = .init(value: Value.deafultPrimaryValue)
+        self.hostValue = .init(value: Value.deafultPrimaryValue, type: Value.self)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value) {
-        self.hostValue = .init(value: wrappedValue)
+        self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
 }
@@ -54,12 +54,12 @@ protocol _MagicValue {
     internal let type: MagicalType
 
     public init() {
-        self.hostValue = .init(value: Value.defualtValue)
+        self.hostValue = .init(value: Value.defualtValue, type: Value.self)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value) {
-        self.hostValue = .init(value: wrappedValue)
+        self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
 }
@@ -79,12 +79,12 @@ protocol _MagicValue {
     internal let type: MagicalType
 
     public init() {
-        hostValue = .init(value: nil)
+        hostValue = .init(value: nil, type: Value.self)
         self.type = Value.type
     }
 
     public init(wrappedValue: Value?, primary: Bool = false) {
-        self.hostValue = .init(value: wrappedValue)
+        self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
 }

@@ -40,10 +40,14 @@ public class MagicData {
 
                 switch expression.type {
                 case .string:
-                    if expression.option {
-                        host.set(value: row[Expression<String?>(expression.name)])
+                    if let convert = host.type as? MagicStringConvert.Type {
+                        if expression.option {
+                            host.set(value: convert.create(row[Expression<String?>(expression.name)]))
+                        } else {
+                            host.set(value: convert.create(row[Expression<String>(expression.name)]))
+                        }
                     } else {
-                        host.set(value: row[Expression<String>(expression.name)])
+                        throw MagicError.connetConvertToMagicConvert
                     }
                 }
             }

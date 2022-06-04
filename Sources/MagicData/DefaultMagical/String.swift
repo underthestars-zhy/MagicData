@@ -8,6 +8,14 @@
 import Foundation
 
 extension String: Magical, MagicalPrimaryValue, MagicStringConvert {
+    public static func create(_ value: String?) -> String? {
+        if let value = value {
+            return value
+        } else {
+            return nil
+        }
+    }
+
     public static var defualtValue: String {
         ""
     }

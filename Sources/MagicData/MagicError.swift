@@ -11,4 +11,5 @@ public enum MagicError: Error {
     case cannotCreateFile
     case missValue
     case missHost
+    case connetConvertToMagicConvert
 }

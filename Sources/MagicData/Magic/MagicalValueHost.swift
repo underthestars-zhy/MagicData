@@ -9,13 +9,15 @@ import Foundation
 
 class MagicalValueHost: NSObject {
     var value: Any?
+    let type: Magical.Type
 
     func set(value _value: Any?) {
         value = _value
     }
 
-    init(value: Any?) {
+    init(value: Any?, type: Magical.Type) {
         self.value = value
+        self.type = type
     }
 }
 
