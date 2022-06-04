@@ -26,7 +26,7 @@ extension UUID: Magical, MagicalPrimaryValue, MagicStringConvert {
 
     static public var type: MagicalType = .string
 
-    public func convertToString() -> String {
+    public func convert() -> String {
         return self.uuidString
     }
 }

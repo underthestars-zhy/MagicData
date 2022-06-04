@@ -9,4 +9,5 @@ import Foundation
 
 public enum MagicalType {
     case string
+    case int
 }

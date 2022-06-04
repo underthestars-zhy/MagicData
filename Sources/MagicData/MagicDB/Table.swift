@@ -50,6 +50,16 @@ extension MagicData {
                     } else {
                         t.column(Expression<String>(expression.name), primaryKey: expression.primary)
                     }
+                case .int:
+                    if expression.option {
+                        t.column(Expression<Int?>(expression.name))
+                    } else {
+                        if expression.primary {
+                            t.column(Expression<Int>(expression.name), primaryKey: .autoincrement)
+                        } else {
+                            t.column(Expression<Int>(expression.name), primaryKey: false)
+                        }
+                    }
                 }
             }
         })

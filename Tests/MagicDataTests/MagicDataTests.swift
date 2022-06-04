@@ -2,15 +2,13 @@ import XCTest
 @testable import MagicData
 
 struct TestModel: MagicObject {
-    @PrimaryMagicValue var id: UUID
+    @PrimaryMagicValue var id: Int
 
     @MagicValue var name: String
 
     @OptionMagicValue var petName: String?
 
-    init() {
-
-    }
+    init() {}
 
     init(name: String) {
         self.name = name
