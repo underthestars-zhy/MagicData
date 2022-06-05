@@ -1,5 +1,6 @@
 import Foundation
 import SQLite
+import CollectionConcurrencyKit
 
 @MagicActor
 public class MagicData {
@@ -27,10 +28,10 @@ public class MagicData {
         try db.run(table.insert(or: .replace, createSetters(of: object)))
     }
 
-    public func object<Value: MagicObject>(of: Value.Type) throws -> [Value] {
+    public func object<Value: MagicObject>(of: Value.Type) async throws -> [Value] {
         let table = Table("\(type(of: Value().self))")
 
-        return try db.prepare(table).map { row in
+        return try await db.prepare(table).asyncMap { row in
             let model = Value()
             let mirror = model.createMirror()
             for expression in mirror.createExpresses() {
@@ -42,9 +43,9 @@ public class MagicData {
                 case .string:
                     if let convert = host.type as? MagicStringConvert.Type {
                         if expression.option {
-                            host.set(value: convert.create(row[Expression<String?>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<String?>(expression.name)], magic: self))
                         } else {
-                            host.set(value: convert.create(row[Expression<String>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<String>(expression.name)], magic: self))
                         }
                     } else {
                         throw MagicError.connetConvertToMagicConvert
@@ -52,9 +53,9 @@ public class MagicData {
                 case .int:
                     if let convert = host.type as? MagicIntConvert.Type {
                         if expression.option {
-                            host.set(value: convert.create(row[Expression<Int?>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Int?>(expression.name)], magic: self))
                         } else {
-                            host.set(value: convert.create(row[Expression<Int>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Int>(expression.name)], magic: self))
                         }
                     } else {
                         throw MagicError.connetConvertToMagicConvert
@@ -62,9 +63,9 @@ public class MagicData {
                 case .double:
                     if let convert = host.type as? MagicDoubleConvert.Type {
                         if expression.option {
-                            host.set(value: convert.create(row[Expression<Double?>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Double?>(expression.name)], magic: self))
                         } else {
-                            host.set(value: convert.create(row[Expression<Double>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Double>(expression.name)], magic: self))
                         }
                     } else {
                         throw MagicError.connetConvertToMagicConvert
@@ -72,9 +73,9 @@ public class MagicData {
                 case .data:
                     if let convert = host.type as? MagicDataConvert.Type {
                         if expression.option {
-                            host.set(value: convert.create(row[Expression<Data?>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Data?>(expression.name)], magic: self))
                         } else {
-                            host.set(value: convert.create(row[Expression<Data>(expression.name)]))
+                            try await host.set(value: convert.create(row[Expression<Data>(expression.name)], magic: self))
                         }
                     } else {
                         throw MagicError.connetConvertToMagicConvert

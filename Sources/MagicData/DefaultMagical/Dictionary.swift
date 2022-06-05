@@ -8,18 +8,14 @@
 import Foundation
 
 extension Dictionary: Magical, MagicDataConvert where Key: Codable, Value: Codable {
-    public static func create(_ value: Data?) -> Self? {
+    public static func create(_ value: Data?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return try? JSONDecoder().decode(Self.self, from: value)
         } else {
             return nil
         }
     }
-
-    public static var defualtValue: Self? {
-        [:]
-    }
-
+    
     public static var type: MagicalType {
         return .data
     }

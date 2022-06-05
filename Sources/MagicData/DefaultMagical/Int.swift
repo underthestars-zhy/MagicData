@@ -8,16 +8,12 @@
 import Foundation
 
 extension Int: Magical, MagicalPrimaryValue, MagicIntConvert {
-    public static func create(_ value: Int?) -> Int? {
+    public static func create(_ value: Int?, magic: MagicData) async throws -> Int? {
         if let value = value {
             return value
         } else {
             return nil
         }
-    }
-
-    public static var defualtValue: Int? {
-        0
     }
 
     public static var deafultPrimaryValue: Int {

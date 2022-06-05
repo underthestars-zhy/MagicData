@@ -8,16 +8,12 @@
 import Foundation
 
 extension UUID: Magical, MagicalPrimaryValue, MagicStringConvert {
-    public static func create(_ value: String?) -> UUID? {
+    public static func create(_ value: String?, magic: MagicData) async throws -> UUID? {
         if let value = value {
             return UUID(uuidString: value)
         } else {
             return nil
         }
-    }
-
-    public static var defualtValue: UUID? {
-        UUID()
     }
 
     public static var deafultPrimaryValue: UUID {

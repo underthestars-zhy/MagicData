@@ -8,6 +8,6 @@
 import Foundation
 
 public protocol MagicStringConvert {
-    static func create(_ value: String?) -> Self?
+    static func create(_ value: String?, magic: MagicData) async throws -> Self?
     func convert() -> String
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 extension String: Magical, MagicalPrimaryValue, MagicStringConvert {
-    public static func create(_ value: String?) -> String? {
+    public static func create(_ value: String?, magic: MagicData) async throws -> String? {
         if let value = value {
             return value
         } else {

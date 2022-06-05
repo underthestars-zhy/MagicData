@@ -8,16 +8,12 @@
 import Foundation
 
 extension Data: Magical, MagicDataConvert {
-    public static func create(_ value: Self?) -> Self? {
+    public static func create(_ value: Self?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return value
         } else {
             return nil
         }
-    }
-
-    public static var defualtValue: Self? {
-        Data()
     }
 
     static public var type: MagicalType = .data

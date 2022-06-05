@@ -12,7 +12,7 @@ public protocol MagicalCodable: Magical, MagicDataConvert where Self: Codable {
 }
 
 public extension MagicalCodable {
-    static func create(_ value: Data?) -> Self? {
+    static func create(_ value: Data?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return try? JSONDecoder().decode(Self.self, from: value)
         } else {
