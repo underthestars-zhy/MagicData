@@ -87,6 +87,6 @@ final class MagicDataTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(objects.count, 11)
+        XCTAssertEqual(objects.count, 0)
     }
 }

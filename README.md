@@ -43,7 +43,7 @@ struct TestModel: MagicObject {
 
 All **MagicObject** need a line `init() {}`.
 If you want to use primary value to query the data or update the data you need to set the `@PrimaryMagicValue`. All the **PrimaryMagicValue**s have a unique defualt value.
-**MagicValue** can save all the `Magical` value which it isn't option. And all the **MagicValue** have the same defualt value. But you shoudn't use them. It just for the `init() {}` line. If you use the default value in a inproper way, this will cause crash.
+**MagicValue** can save all the `Magical` value which it isn't option.  It just for the `init() {}` line.. As you see, you can create a object without setting the value, but if you access the value, a crash will happen.
 **OptionMagicValue** like the **MagicValue**, but it can store the option value. It has a defualt value `nil`.
 
 Although `TestModel` is a sturct but if you copy it, and change it, the value will change in the original instance too.
@@ -75,14 +75,14 @@ print(test.name) // "hi"
 
 Now we support theses:
 
-`String` will be stored as `Text` in the database. </br>
-`UUID` will be stored as `Text` in the database. </br>
-`Int` will be stored as `Int` in the database. </br>
-`Double` will be stored as `Real` in the database. </br>
-`Data` will be stored as `Blob` in the database. </br>
-`Codable` will be stored as `Blob` in the database. </br>
-`Arrary` will be stored as `Blob` in the database. </br>
-`Dictionary` will be stored as `Blob` in the database. </br>
+* `String` will be stored as `Text` in the database.
+* `UUID` will be stored as `Text` in the database.
+* `Int` will be stored as `Int` in the database.
+* `Double` will be stored as `Real` in the database.
+* `Data` will be stored as `Blob` in the database.
+* `Codable` will be stored as `Blob` in the database.
+* `Arrary` will be stored as `Blob` in the database.
+* `Dictionary` will be stored as `Blob` in the database.
 
 ### Points of Codable
 
