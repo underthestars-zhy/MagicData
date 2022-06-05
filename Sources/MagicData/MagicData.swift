@@ -44,6 +44,36 @@ public class MagicData {
         try await db.run(table.insert(or: .replace, createSetters(of: object)))
     }
 
+    public func object<Value: MagicObject, Primary: Magical & MagicalPrimaryValue>(of: Value.Type, primary: Primary) async throws -> Value {
+        guard Value().hasPrimaryValue else { throw MagicError.missPrimary }
+        guard let primaryExpress = Value().createMirror().createExpresses().first(where: { express in
+            express.primary
+        }) else {
+            throw MagicError.missPrimary
+        }
+
+        try createTable(Value())
+        // TODO: try updateTable(object)
+
+        let table = Table("\(type(of: Value().self))")
+        let query: Table
+
+        switch primaryExpress.type {
+        case .string:
+            guard let primaryValue = try await (primary as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
+        case .int:
+            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
+        default:
+            throw MagicError.missPrimary
+        }
+
+        guard let row = try db.pluck(query) else { throw MagicError.cannotFindValue }
+
+        return try await self.createModel(by: row)
+    }
+
     public func object<Value: MagicObject>(of: Value.Type) async throws -> [Value] {
         try createTable(Value())
         // TODO: try updateTable(object)
@@ -51,58 +81,7 @@ public class MagicData {
         let table = Table("\(type(of: Value().self))")
 
         return try await db.prepare(table).asyncMap { row in
-            let model = Value()
-            let mirror = model.createMirror()
-            for expression in mirror.createExpresses() {
-                let keyPath = \Value.[checkedMirrorDescendant: expression.name] as PartialKeyPath<Value>
-                let valueMirror = Mirror(reflecting: model[keyPath: keyPath])
-                guard let host = valueMirror.getHost() else { throw MagicError.missHost }
-
-                switch expression.type {
-                case .string:
-                    if let convert = host.type as? MagicStringConvert.Type {
-                        if expression.option {
-                            try await host.set(value: convert.create(row[Expression<String?>(expression.name)], magic: self))
-                        } else {
-                            try await host.set(value: convert.create(row[Expression<String>(expression.name)], magic: self))
-                        }
-                    } else {
-                        throw MagicError.connetConvertToMagicConvert
-                    }
-                case .int:
-                    if let convert = host.type as? MagicIntConvert.Type {
-                        if expression.option {
-                            try await host.set(value: convert.create(row[Expression<Int?>(expression.name)], magic: self))
-                        } else {
-                            try await host.set(value: convert.create(row[Expression<Int>(expression.name)], magic: self))
-                        }
-                    } else {
-                        throw MagicError.connetConvertToMagicConvert
-                    }
-                case .double:
-                    if let convert = host.type as? MagicDoubleConvert.Type {
-                        if expression.option {
-                            try await host.set(value: convert.create(row[Expression<Double?>(expression.name)], magic: self))
-                        } else {
-                            try await host.set(value: convert.create(row[Expression<Double>(expression.name)], magic: self))
-                        }
-                    } else {
-                        throw MagicError.connetConvertToMagicConvert
-                    }
-                case .data:
-                    if let convert = host.type as? MagicDataConvert.Type {
-                        if expression.option {
-                            try await host.set(value: convert.create(row[Expression<Data?>(expression.name)], magic: self))
-                        } else {
-                            try await host.set(value: convert.create(row[Expression<Data>(expression.name)], magic: self))
-                        }
-                    } else {
-                        throw MagicError.connetConvertToMagicConvert
-                    }
-                }
-            }
-
-            return model
+            return try await self.createModel(by: row)
         }
     }
 }

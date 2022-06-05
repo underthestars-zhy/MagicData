@@ -115,7 +115,7 @@ Some value can be used in the `@PrimaryMagicValue`:
 ## Add/Update
 
 ```swift
-try awiat magic.update(object)
+try await magic.update(object)
 ```
 
 If object don't have primary value, every `update` is like `add`.
@@ -124,7 +124,7 @@ If object has primary, `update` or `add` will base on whether it has been stored
 ## Query All
 
 ```swift
-try awiat magic.object(of: TestModel.self)
+try await magic.object(of: TestModel.self)
 ```
 
 This will give back all the values.

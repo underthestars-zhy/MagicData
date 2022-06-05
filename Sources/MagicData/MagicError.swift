@@ -13,4 +13,5 @@ public enum MagicError: Error {
     case missHost
     case connetConvertToMagicConvert
     case missPrimary
+    case cannotFindValue
 }

@@ -10,3 +10,5 @@ import Foundation
 public protocol MagicalPrimaryValue {
     static var deafultPrimaryValue: Self { get }
 }
+
+public typealias CombineMagicalPrimaryValueWithMagical = Magical & MagicalPrimaryValue
