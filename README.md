@@ -12,6 +12,8 @@ Here are two ways to create **MagicData**.
 ```swift
 let magic = try awiat MagicData() // This will create a database at the app's document path
 let magic try await MagicData(path: URL(fileURLWithPath: "").path) // This will create a database at your custom path
+let magic = try await MagicData(type: .temporary) // This will create a auto-delete database
+let magic = try await MagicData(type: .memory) // This will create a database in the memory
 ```
 
 ## MagicObject
@@ -97,12 +99,9 @@ struct Job: MagicalCodable {
 @OptionMagicValue var job: Job?
 ```
 
-`MagicalCodable` doesn't have defualt value, which means if you use it in the `@MagicValue`, and doesn't init it. You code will **crash**
-
 ### Ponints of Arrary & Dictionary
 
 We only support the `Arrary` or `Dictionary` which conforms to the `Codable`.
-`Arrary` or `Dictionary` has defualt value, but doesn't be supposed to use.
 
 ### Primary
 
