@@ -19,6 +19,6 @@ import Foundation
 //    static public var type: MagicalType = .string
 //
 //    public func convert(magic: MagicData) async throws -> String {
-//        return self
+//        guard self.hasPrimaryValue else { throw MagicError.missPrimary }
 //    }
 //}

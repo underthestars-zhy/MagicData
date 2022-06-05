@@ -39,4 +39,23 @@ final class MagicDataTests: XCTestCase {
         XCTAssertEqual(objects.first?.value, 1)
         XCTAssertEqual(objects.first?.text, "2")
     }
+
+    func test02() async throws {
+        struct TestModel: MagicObject {
+            @MagicValue var text: String
+
+            @OptionMagicValue var value: Int?
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let instance = TestModel("1")
+
+        XCTAssertFalse(instance.hasPrimaryValue)
+    }
+
 }

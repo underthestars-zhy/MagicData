@@ -12,4 +12,5 @@ public enum MagicError: Error {
     case missValue
     case missHost
     case connetConvertToMagicConvert
+    case missPrimary
 }

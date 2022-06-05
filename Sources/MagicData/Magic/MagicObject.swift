@@ -10,6 +10,7 @@ import Foundation
 public protocol MagicObject {
     func createMirror() -> Mirror
     subscript(checkedMirrorDescendant key: String) -> Any { get }
+    var hasPrimaryValue: Bool { get }
 
     init()
 }
@@ -21,5 +22,13 @@ extension MagicObject {
 
     subscript(checkedMirrorDescendant key: String) -> Any {
         return Mirror(reflecting: self).descendant(key)!
+    }
+
+    var hasPrimaryValue: Bool {
+        let mirror = self.createMirror()
+        return mirror.children.contains { (label: String?, value: Any) in
+            let _mirror = Mirror(reflecting: value)
+            return "\(_mirror.subjectType)".hasPrefix("PrimaryMagicValue")
+        }
     }
 }
