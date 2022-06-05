@@ -18,7 +18,7 @@ extension Double: Magical, MagicDoubleConvert {
     
     static public var type: MagicalType = .double
 
-    public func convert() -> Self {
+    public func convert(magic: MagicData) async throws -> Self {
         return self
     }
 }

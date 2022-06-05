@@ -18,7 +18,7 @@ extension Data: Magical, MagicDataConvert {
 
     static public var type: MagicalType = .data
 
-    public func convert() -> Self {
+    public func convert(magic: MagicData) async throws -> Self {
         return self
     }
 }

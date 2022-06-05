@@ -22,7 +22,7 @@ extension Int: Magical, MagicalPrimaryValue, MagicIntConvert {
 
     static public var type: MagicalType = .int
 
-    public func convert() -> Int {
+    public func convert(magic: MagicData) async throws -> Int {
         return self
     }
 }

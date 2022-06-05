@@ -35,13 +35,13 @@ public class MagicData {
         try createTableInfoTableIfNotExist()
     }
 
-    public func update(_ object: MagicObject) throws {
+    public func update(_ object: MagicObject) async throws {
         try createTable(object)
         // TODO: try updateTable(object)
 
         let table = Table(tableName(of: object))
 
-        try db.run(table.insert(or: .replace, createSetters(of: object)))
+        try await db.run(table.insert(or: .replace, createSetters(of: object)))
     }
 
     public func object<Value: MagicObject>(of: Value.Type) async throws -> [Value] {

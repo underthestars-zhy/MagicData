@@ -24,7 +24,7 @@ public extension MagicalCodable {
         return .data
     }
 
-    func convert() -> Data {
+    func convert(magic: MagicData) async throws -> Data {
         return (try? JSONEncoder().encode(self)) ?? Data()
     }
 }

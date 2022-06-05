@@ -20,7 +20,7 @@ extension Dictionary: Magical, MagicDataConvert where Key: Codable, Value: Codab
         return .data
     }
 
-    public func convert() -> Data {
+    public func convert(magic: MagicData) async throws -> Data {
         return (try? JSONEncoder().encode(self)) ?? Data()
     }
 }

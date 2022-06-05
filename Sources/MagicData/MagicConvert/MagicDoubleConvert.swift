@@ -9,5 +9,5 @@ import Foundation
 
 public protocol MagicDoubleConvert {
     static func create(_ value: Double?, magic: MagicData) async throws -> Self?
-    func convert() -> Double
+    func convert(magic: MagicData) async throws -> Double
 }

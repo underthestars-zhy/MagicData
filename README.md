@@ -108,9 +108,9 @@ We only support the `Arrary` or `Dictionary` which conforms to the `Codable`.
 
 Some value can be used in the `@PrimaryMagicValue`:
 
-**String** has a defualt **UUID String** value. </br>
-**UUID** has a default **UUID** value. </br>
-**Int** has auto increase ability. </br>
+* **String** has a defualt **UUID String** value.
+* **UUID** has a default **UUID** value.
+* **Int** has auto increase ability.
 
 ## Add/Update
 

@@ -7,16 +7,17 @@
 
 import Foundation
 import SQLite
+import CollectionConcurrencyKit
 
 extension MagicData {
-    func createSetters(of object: MagicObject) throws -> [Setter] {
-        return try object.createMirror().createExpresses().compactMap({ express in
+    func createSetters(of object: MagicObject) async throws -> [Setter] {
+        return try await object.createMirror().createExpresses().asyncCompactMap({ express in
             switch express.type {
             case .string:
                 if express.option {
-                    return (Expression<String?>(express.name) <- (express.value as? MagicStringConvert)?.convert())
+                    return try await (Expression<String?>(express.name) <- (express.value as? MagicStringConvert)?.convert(magic: self))
                 } else {
-                    if let value = (express.value as? MagicStringConvert)?.convert() {
+                    if let value = try await (express.value as? MagicStringConvert)?.convert(magic: self) {
                         return (Expression<String>(express.name) <- value)
                     } else {
                         throw MagicError.missValue
@@ -24,11 +25,11 @@ extension MagicData {
                 }
             case .int:
                 if express.option {
-                    return (Expression<Int?>(express.name) <- (express.value as? MagicIntConvert)?.convert())
+                    return try await (Expression<Int?>(express.name) <- (express.value as? MagicIntConvert)?.convert(magic: self))
                 } else {
                     if express.auto {
                         return nil
-                    } else if let value = (express.value as? MagicIntConvert)?.convert() {
+                    } else if let value = try await (express.value as? MagicIntConvert)?.convert(magic: self) {
                         return (Expression<Int>(express.name) <- value)
                     } else {
                         throw MagicError.missValue
@@ -36,9 +37,9 @@ extension MagicData {
                 }
             case .double:
                 if express.option {
-                    return (Expression<Double?>(express.name) <- (express.value as? MagicDoubleConvert)?.convert())
+                    return try await (Expression<Double?>(express.name) <- (express.value as? MagicDoubleConvert)?.convert(magic: self))
                 } else {
-                    if let value = (express.value as? MagicDoubleConvert)?.convert() {
+                    if let value = try await (express.value as? MagicDoubleConvert)?.convert(magic: self) {
                         return (Expression<Double>(express.name) <- value)
                     } else {
                         throw MagicError.missValue
@@ -46,9 +47,9 @@ extension MagicData {
                 }
             case .data:
                 if express.option {
-                    return (Expression<Data?>(express.name) <- (express.value as? MagicDataConvert)?.convert())
+                    return try await (Expression<Data?>(express.name) <- (express.value as? MagicDataConvert)?.convert(magic: self))
                 } else {
-                    if let value = (express.value as? MagicDataConvert)?.convert() {
+                    if let value = try await (express.value as? MagicDataConvert)?.convert(magic: self) {
                         return (Expression<Data>(express.name) <- value)
                     } else {
                         throw MagicError.missValue
