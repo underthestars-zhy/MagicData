@@ -128,3 +128,11 @@ try await magic.object(of: TestModel.self)
 ```
 
 This will give back all the values.
+
+## Query by primary value
+
+```swift
+try await magic.object(of: TestModel.self, primary: AnyPrimaryValue)
+```
+
+This will throw a error if the primary value isn't in the database.
