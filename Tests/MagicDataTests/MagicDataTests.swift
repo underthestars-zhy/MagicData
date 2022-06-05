@@ -1,92 +1,42 @@
 import XCTest
 @testable import MagicData
 
-struct TestModel: MagicObject {
-    @PrimaryMagicValue var id: String
-
-    @MagicValue var name: String
-    @MagicValue var age: Int
-    @MagicValue var friendNames: [String]
-    @MagicValue var teachersNamesAndJob: [String : String]
-
-    @OptionMagicValue var school: Data?
-    @OptionMagicValue var petName: String?
-    @OptionMagicValue var hight: Double?
-    @OptionMagicValue var job: Job?
-
-    var customString: String {
-        "My ID: \(id), name: \(name) " + ("\(String(describing: job))") + " friends: \(friendNames)" + " teachers: \(teachersNamesAndJob)"
-    }
-
-    init() {}
-
-    init(name: String) {
-        self.name = name
-        self.friendNames = []
-        self.teachersNamesAndJob = [:]
-    }
-}
-
-struct Job: MagicalCodable {
-    let title: String
-    let salary: Int
-}
-
 final class MagicDataTests: XCTestCase {
-    func testName() async throws {
-        let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
-        print(url)
-        let magic = try await MagicData(path: url)
-        print(await magic.tableName(of: TestModel(name: "hi")))
-    }
+    func test01() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
 
-    func testAdd() async throws {
-        let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
-        print(url)
-        let magic = try await MagicData(path: url)
-        let test = TestModel(name: "hi")
-        test.age = 1
-        test.school = "WWDC School".data(using: .utf8)
-        test.friendNames.append("wwdc")
-        try await magic.update(test)
+            @MagicValue var text: String
 
-        let test1 = test
+            @OptionMagicValue var value: Int?
 
-        test1.petName = "az"
-        test1.name = "hello"
-        test1.hight = 2.3
-        test1.job = .init(title: "CES", salary: 10000)
-        test1.teachersNamesAndJob = ["Mrs. Joe" : "Math"]
-        try await magic.update(test)
+            init() {}
 
-        XCTAssertEqual(test.petName, "az")
-    }
-
-    func testAsyncAdd() async throws  {
-        let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for i in 1...10 {
-                let magic = try await MagicData(path: url)
-                try await magic.update(TestModel(name: "\(i)"))
+            init(_ text: String) {
+                self.text = text
             }
         }
-    }
 
-    func testGet() async throws {
-        let url = URL(fileURLWithPath: "/Users/zhuhaoyu/Downloads")
-        print(url)
-        let magic = try await MagicData(path: url)
+        let magic = try await MagicData(type: .temporary)
+
+        let count = try await magic.object(of: TestModel.self).count
+
+        XCTAssertEqual(count, 0)
+
+        let instance = TestModel("1")
+        instance.value = 1
+        let instance2 = instance
+        instance2.text = "2"
+
+        XCTAssertEqual(instance.text, "2")
+
+        try await magic.update(instance)
 
         let objects = try await magic.object(of: TestModel.self)
 
-        for object in objects {
-            print(object.customString)
-            if let data = object.school {
-                print(String(data: data, encoding: .utf8) ?? "")
-            }
-        }
+        XCTAssertEqual(objects.count, 1)
 
-        XCTAssertEqual(objects.count, 0)
+        XCTAssertEqual(objects.first?.value, 1)
+        XCTAssertEqual(objects.first?.text, "2")
     }
 }
