@@ -23,11 +23,18 @@ extension MagicObject {
     func convert(magic: MagicData) async throws -> Int {
         guard self.hasPrimaryValue else { throw MagicError.missPrimary }
 
-        let allReversable = self.createMirror().findAllReversable()
+//        let allReversable: [KeyPath<Magical, Reversable>] = self.createMirror().findAllReversable().compactMap { r in
+//            let mirror = Mirror(reflecting: r)
+//            let type = mirror.children.first { (label: String?, value: Any) in
+//                label == "objectType"
+//            }
+//        }
+//
+//        print(allReversable.count)
 
         try await magic.update(self)
 
-        let zIndex = try await magic.getZIndexOfObject(self) - 1
+        let zIndex = try await magic.getZIndex(of: self)
 
         return zIndex
     }

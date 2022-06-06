@@ -61,6 +61,8 @@ extension Mirror {
     func findAllReversable() -> [Any] {
         return self.children.filter { child in
             "\(Mirror(reflecting: child.value).subjectType)".hasPrefix("ReverseMagicValue")
+        }.map { (label: String?, value: Any) in
+            value
         }
     }
 }

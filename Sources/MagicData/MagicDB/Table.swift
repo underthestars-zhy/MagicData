@@ -108,6 +108,24 @@ extension MagicData {
         return res[zindex]
     }
 
+    func getZIndex(of object: MagicObject) async throws -> Int {
+        guard let primaryExpress = object.createMirror().createExpresses().first(where: { express in
+            express.primary
+        }) else {
+            throw MagicError.missPrimary
+        }
+
+        guard let primaryValue = object.createMirror().getValue(by: primaryExpress) as? CombineMagicalPrimaryValueWithMagical else { throw MagicError.missPrimary  }
+
+        let table = Table(tableName(of: object))
+
+        let query = try await createQueryTable(primaryExpress, primary: primaryValue, table: table)
+
+        guard let row = try db.pluck(query) else { throw MagicError.cannotFindValue }
+
+        return row[Expression<Int>("z_index")]
+    }
+
     func addZindex(_ object: MagicObject, orginial: Int) throws {
         let zindex = Expression<Int>("z_index_count")
         let tableName = Expression<String>("table_name")
