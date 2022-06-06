@@ -22,7 +22,11 @@ extension MagicObject {
 
     func convert(magic: MagicData) async throws -> Int {
         guard self.hasPrimaryValue else { throw MagicError.missPrimary }
+
+        let allReversable = self.createMirror().findAllReversable()
+
         try await magic.update(self)
+
         let zIndex = try await magic.getZIndexOfObject(self) - 1
 
         return zIndex

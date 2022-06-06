@@ -23,7 +23,7 @@ extension Mirror {
                let type = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "type"
                })?.value as? MagicalType {
-                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue"), type: type, value: getValueFromHost(mirror: mirror), auto:  mirror.getHost()?.auto ?? false)
+                return MagicExpress(name: child.label ?? "_error_", primary: primary, option: "\(mirror.subjectType)".hasPrefix("OptionMagicValue") || "\(mirror.subjectType)".hasPrefix("ReverseMagicValue"), type: type, value: getValueFromHost(mirror: mirror), auto:  mirror.getHost()?.auto ?? false)
             } else {
                 return nil
             }
@@ -56,5 +56,11 @@ extension Mirror {
         let mirror = Mirror(reflecting: magicValue)
 
         return getValueFromHost(mirror: mirror)
+    }
+
+    func findAllReversable() -> [Any] {
+        return self.children.filter { child in
+            "\(Mirror(reflecting: child.value).subjectType)".hasPrefix("ReverseMagicValue")
+        }
     }
 }

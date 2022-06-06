@@ -111,6 +111,7 @@ public protocol Reversable {}
             hostValue.value = newValue
         }
     }
+
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
