@@ -9,11 +9,12 @@ import Foundation
 
 //extension MagicObject: Magical, MagicStringConvert {
 //    public static func create(_ value: String?, magic: MagicData) async throws -> Self? {
-//        if let value = value {
-//            return value
-//        } else {
-//            return nil
-//        }
+////        if let value = value {
+////            return value
+////        } else {
+////            return nil
+////        }
+//        return nil
 //    }
 //
 //    static public var type: MagicalType = .string

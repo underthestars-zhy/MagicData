@@ -52,7 +52,20 @@ public class MagicData {
             
 
             if try await has(of: type(of: object), primary: primaryValue) {
-                try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexOfObject(object))]))
+                let query: Table
+
+                switch primaryExpress.type {
+                case .string:
+                    guard let primaryValue = try await (primaryValue as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+                    query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
+                case .int:
+                    guard let primaryValue = try await (primaryValue as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+                    query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
+                default:
+                    throw MagicError.missPrimary
+                }
+
+                try await db.run(query.update(createSetters(of: object)))
             } else {
                 try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexAndUpdate(object))]))
             }
