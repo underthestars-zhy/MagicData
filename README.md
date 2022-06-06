@@ -22,24 +22,24 @@ let magic = try await MagicData(type: .memory) // This will create a database in
 
 ```swift
 struct TestModel: MagicObject {
-    @PrimaryMagicValue var id: String
+@PrimaryMagicValue var id: String
 
-    @MagicValue var name: String
-    @MagicValue var age: Int
+@MagicValue var name: String
+@MagicValue var age: Int
 
-    @OptionMagicValue var school: Data?
-    @OptionMagicValue var petName: String?
-    @OptionMagicValue var hight: Double?
+@OptionMagicValue var school: Data?
+@OptionMagicValue var petName: String?
+@OptionMagicValue var hight: Double?
 
-    var customString: String {
-        "My ID: \(id), name: \(name)"
-    }
+var customString: String {
+"My ID: \(id), name: \(name)"
+}
 
-    init() {}
+init() {}
 
-    init(name: String) {
-        self.name = name
-    }
+init(name: String) {
+self.name = name
+}
 }
 ```
 
@@ -92,8 +92,8 @@ First of all, we cannot store `Codable`, but it can be stored as `MagicalCodable
 
 ```swift
 struct Job: MagicalCodable {
-    let title: String
-    let salary: Int
+let title: String
+let salary: Int
 }
 
 @OptionMagicValue var job: Job?
@@ -143,3 +143,37 @@ try await magic.has(of: TestModel.self, primary: instance1.uuid)
 ```
 
 **Requirement**: MagicalObject has a primary value
+
+## Relationship
+
+**MagicData** support relationship like core data.
+
+### One to One
+
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var sub: Sub
+
+    init() {}
+
+    init(_ sub: Sub) {
+        self.sub = sub
+    }
+}
+
+struct Sub: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var text: String
+
+    init() {}
+
+    init(_ text: String) {
+        self.text = text
+    }
+}
+```
+
+You could use `@OptionMagicValue` as well. This kind of relation is a little different of coredata's. Because it isn't a lazy value. That means, it will fetch the `sub` in the database, when you fetch the `TestModel`.
