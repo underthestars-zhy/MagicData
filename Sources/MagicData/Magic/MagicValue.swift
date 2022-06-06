@@ -7,14 +7,9 @@
 
 import Foundation
 
-protocol _MagicValue {
-    associatedtype Value: Magical
-    var wrappedValue: Value { get nonmutating set }
-    var primary: Bool { get }
-    var type: MagicalType { get }
-}
+public protocol Reversable {}
 
-@propertyWrapper struct PrimaryMagicValue<Value: Magical>: _MagicValue where Value: MagicalPrimaryValue {
+@propertyWrapper struct PrimaryMagicValue<Value: Magical> where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
         get {
             (hostValue.value as? Value) ?? .deafultPrimaryValue
@@ -25,6 +20,7 @@ protocol _MagicValue {
             hostValue.auto = false
         }
     }
+
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = true
     internal let type: MagicalType
@@ -41,7 +37,7 @@ protocol _MagicValue {
     }
 }
 
-@propertyWrapper public struct MagicValue<Value: Magical>: _MagicValue {
+@propertyWrapper public struct MagicValue<Value: Magical>: Reversable {
     public var wrappedValue: Value {
         get {
             (hostValue.value as? Value) ?? .defualtValue!
@@ -51,9 +47,16 @@ protocol _MagicValue {
             hostValue.value = newValue
         }
     }
+
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
+
+    public var projectedValue: Reversable {
+        get {
+            self
+        }
+    }
 
     public init() {
         self.hostValue = .init(value: Value.defualtValue, type: Value.self)
@@ -66,7 +69,39 @@ protocol _MagicValue {
     }
 }
 
-@propertyWrapper public struct OptionMagicValue<Value: Magical> {
+@propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable {
+    public var wrappedValue: Value? {
+        get {
+            hostValue.value as? Value
+        }
+
+        nonmutating set {
+            hostValue.value = newValue
+        }
+    }
+
+    public var projectedValue: Reversable {
+        get {
+            self
+        }
+    }
+
+    internal let hostValue: MagicalValueHost
+    internal let primary: Bool = false
+    internal let type: MagicalType
+
+    public init() {
+        hostValue = .init(value: nil, type: Value.self)
+        self.type = Value.type
+    }
+
+    public init(wrappedValue: Value?) {
+        self.hostValue = .init(value: wrappedValue, type: Value.self)
+        self.type = Value.type
+    }
+}
+
+@propertyWrapper public struct ReverseMagicValue<Value: Magical> {
     public var wrappedValue: Value? {
         get {
             hostValue.value as? Value
@@ -79,15 +114,18 @@ protocol _MagicValue {
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
+    internal let reverse: KeyPath<Value, Reversable>
 
-    public init() {
+    public init(reverse: KeyPath<Value, Reversable>) {
         hostValue = .init(value: nil, type: Value.self)
         self.type = Value.type
+        self.reverse = reverse
     }
 
-    public init(wrappedValue: Value?, primary: Bool = false) {
+    public init(wrappedValue: Value?, reverse: KeyPath<Value, Reversable>) {
         self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
+        self.reverse = reverse
     }
 }
 

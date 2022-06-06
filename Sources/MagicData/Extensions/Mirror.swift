@@ -14,7 +14,8 @@ extension Mirror {
             if (
                 "\(mirror.subjectType)".hasPrefix("PrimaryMagicValue") ||
                 "\(mirror.subjectType)".hasPrefix("MagicValue") ||
-                "\(mirror.subjectType)".hasPrefix("OptionMagicValue")
+                "\(mirror.subjectType)".hasPrefix("OptionMagicValue") ||
+                "\(mirror.subjectType)".hasPrefix("ReverseMagicValue")
             ),
                let primary = mirror.children.first(where: { (label: String?, value: Any) in
                    label == "primary"

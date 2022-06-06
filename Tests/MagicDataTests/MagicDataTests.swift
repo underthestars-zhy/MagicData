@@ -173,6 +173,8 @@ final class MagicDataTests: XCTestCase {
 
             @MagicValue var text: String
 
+            @ReverseMagicValue(reverse: \TestModel.$sub) var test: TestModel?
+
             init() {}
 
             init(_ text: String) {
