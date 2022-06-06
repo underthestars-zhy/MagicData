@@ -196,5 +196,18 @@ final class MagicDataTests: XCTestCase {
         let count = try await magic.object(of: Sub.self).count
 
         XCTAssertEqual(count, 1)
+
+        let sub2 = Sub("hello")
+        instance.sub = sub2
+
+        try await magic.update(instance)
+
+        let first1 = try await magic.object(of: TestModel.self).first
+
+        XCTAssertEqual(first1?.sub.text, "hello")
+
+        let count2 = try await magic.object(of: Sub.self).count
+
+        XCTAssertEqual(count2, 2)
     }
 }
