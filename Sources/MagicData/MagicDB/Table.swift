@@ -159,7 +159,7 @@ extension MagicData {
             guard let primaryValue = try await (primary as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
             query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
         case .int:
-            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self, object: nil) else { throw MagicError.missPrimary }
             query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
         default:
             throw MagicError.missPrimary

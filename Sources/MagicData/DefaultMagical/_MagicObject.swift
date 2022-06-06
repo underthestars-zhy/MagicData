@@ -20,17 +20,24 @@ extension MagicObject {
         return .int
     }
 
-    func convert(magic: MagicData) async throws -> Int {
+    func convert(magic: MagicData, object: MagicObject?) async throws -> Int {
+        guard let object = object else {
+            throw MagicError.missObject
+        }
+
         guard self.hasPrimaryValue else { throw MagicError.missPrimary }
 
-//        let allReversable: [KeyPath<Magical, Reversable>] = self.createMirror().findAllReversable().compactMap { r in
-//            let mirror = Mirror(reflecting: r)
-//            let type = mirror.children.first { (label: String?, value: Any) in
-//                label == "objectType"
-//            }
-//        }
-//
-//        print(allReversable.count)
+        let allReversable: [AnyKeyPath] = self.createMirror().findAllReversable().compactMap { r in
+            let mirror = Mirror(reflecting: r)
+
+            return mirror.children.first { (label: String?, value: Any) in
+                label == "reverse"
+            }?.value as? AnyKeyPath
+        }
+
+        for reversable in allReversable {
+
+        }
 
         try await magic.update(self)
 

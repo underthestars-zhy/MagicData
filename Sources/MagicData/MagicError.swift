@@ -16,4 +16,5 @@ public enum MagicError: Error {
     case cannotFindValue
     case cannotFindZIndex
     case magicalCannotInArraryOrDictionary
+    case missObject
 }

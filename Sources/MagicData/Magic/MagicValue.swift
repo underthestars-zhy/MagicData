@@ -115,21 +115,21 @@ public protocol Reversable {}
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
-    internal let objectType: MagicObject.Type
+//    internal let objectType: MagicObject.Type
     internal let reverse: KeyPath<Object, Reversable>
 
     public init(reverse: KeyPath<Object, Reversable>) {
         hostValue = .init(value: nil, type: Value.self)
         self.type = Value.type
         self.reverse = reverse
-        self.objectType = Object.self
+//        self.objectType = Object.self
     }
 
     public init(wrappedValue: Value?, reverse: KeyPath<Object, Reversable>) {
         self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
         self.reverse = reverse
-        self.objectType = Object.self
+//        self.objectType = Object.self
     }
 }
 
