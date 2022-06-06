@@ -135,3 +135,11 @@ try await magic.object(of: TestModel.self, primary: AnyPrimaryValue)
 ```
 
 This will throw a error if the primary value isn't in the database.
+
+## Know whethere the object exits
+
+```swift
+try await magic.has(of: TestModel.self, primary: instance1.uuid)
+```
+
+**Requirement**: MagicalObject has a primary value
