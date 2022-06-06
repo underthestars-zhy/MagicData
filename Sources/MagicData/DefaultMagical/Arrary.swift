@@ -21,6 +21,10 @@ extension Array: Magical, MagicDataConvert where Element: Codable {
     }
 
     public func convert(magic: MagicData) async throws -> Data {
+        if Element.self is Magical {
+            throw MagicError.magicalCannotInArraryOrDictionary
+        }
+        
         return (try? JSONEncoder().encode(self)) ?? Data()
     }
 }
