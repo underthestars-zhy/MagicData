@@ -52,18 +52,7 @@ public class MagicData {
             
 
             if try await has(of: type(of: object), primary: primaryValue) {
-                let query: Table
-
-                switch primaryExpress.type {
-                case .string:
-                    guard let primaryValue = try await (primaryValue as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
-                    query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
-                case .int:
-                    guard let primaryValue = try await (primaryValue as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
-                    query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
-                default:
-                    throw MagicError.missPrimary
-                }
+                let query: Table = try await createQueryTable(primaryExpress, primary: primaryValue, table: table)
 
                 try await db.run(query.update(createSetters(of: object)))
             } else {
@@ -86,18 +75,7 @@ public class MagicData {
         // TODO: try updateTable(object)
 
         let table = Table("\(type(of: value.init().self))")
-        let query: Table
-
-        switch primaryExpress.type {
-        case .string:
-            guard let primaryValue = try await (primary as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
-            query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
-        case .int:
-            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
-            query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
-        default:
-            throw MagicError.missPrimary
-        }
+        let query: Table = try await createQueryTable(primaryExpress, primary: primary, table: table)
 
         return try db.scalar(query.count) == 1
     }

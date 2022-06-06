@@ -124,5 +124,22 @@ extension MagicData {
 
         return zIndex
     }
+
+    func createQueryTable(_ primaryExpress: MagicExpress, primary: MagicalPrimaryValue, table: Table) async throws -> Table {
+        let query: Table
+
+        switch primaryExpress.type {
+        case .string:
+            guard let primaryValue = try await (primary as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
+        case .int:
+            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
+        default:
+            throw MagicError.missPrimary
+        }
+
+        return query
+    }
 }
 
