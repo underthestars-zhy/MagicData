@@ -88,4 +88,70 @@ final class MagicDataTests: XCTestCase {
         XCTAssertEqual(instance1Copy.text, instance1.text)
     }
 
+    func test04() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance1 = TestModel("\(UUID().uuidString)")
+        let instance2 = TestModel("\(UUID().uuidString)")
+
+        try await magic.update(instance1)
+
+        let has1 = try await magic.has(of: TestModel.self, primary: instance1.uuid)
+        let has2 = try await magic.has(of: TestModel.self, primary: instance2.uuid)
+
+        XCTAssertTrue(has1)
+        XCTAssertFalse(has2)
+    }
+
+    func test05() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance1 = TestModel("\(UUID().uuidString)")
+
+        try await magic.update(instance1)
+
+        instance1.text = "2"
+
+        try await magic.update(instance1)
+
+        let index = try await magic.getZIndexOfObject(instance1)
+
+        XCTAssertEqual(index, 1)
+
+        let instance2 = TestModel("\(UUID().uuidString)")
+
+        try await magic.update(instance2)
+
+        instance2.text = "2"
+
+        try await magic.update(instance2)
+
+        let index2 = try await magic.getZIndexOfObject(instance2)
+
+        XCTAssertEqual(index2, 2)
+    }
 }

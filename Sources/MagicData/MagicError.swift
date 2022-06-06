@@ -14,4 +14,5 @@ public enum MagicError: Error {
     case connetConvertToMagicConvert
     case missPrimary
     case cannotFindValue
+    case cannotFindZIndex
 }

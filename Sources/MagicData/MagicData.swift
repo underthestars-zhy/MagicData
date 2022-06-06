@@ -41,10 +41,55 @@ public class MagicData {
 
         let table = Table(tableName(of: object))
 
-        try await db.run(table.insert(or: .replace, createSetters(of: object)))
+        if object.hasPrimaryValue {
+            guard let primaryExpress = object.createMirror().createExpresses().first(where: { express in
+                express.primary
+            }) else {
+                throw MagicError.missPrimary
+            }
+
+            guard let primaryValue = object.createMirror().getValue(by: primaryExpress) as? CombineMagicalPrimaryValueWithMagical else { throw MagicError.missPrimary  }
+            
+
+            if try await has(of: type(of: object), primary: primaryValue) {
+                try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexOfObject(object))]))
+            } else {
+                try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexAndUpdate(object))]))
+            }
+        } else {
+            try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexAndUpdate(object))]))
+        }
     }
 
-    public func object<Value: MagicObject, Primary: Magical & MagicalPrimaryValue>(of: Value.Type, primary: Primary) async throws -> Value {
+    public func has(of value: MagicObject.Type, primary: CombineMagicalPrimaryValueWithMagical) async throws -> Bool {
+        guard value.init().hasPrimaryValue else { throw MagicError.missPrimary }
+        guard let primaryExpress = value.init().createMirror().createExpresses().first(where: { express in
+            express.primary
+        }) else {
+            throw MagicError.missPrimary
+        }
+
+        try createTable(value.init())
+        // TODO: try updateTable(object)
+
+        let table = Table("\(type(of: value.init().self))")
+        let query: Table
+
+        switch primaryExpress.type {
+        case .string:
+            guard let primaryValue = try await (primary as? MagicStringConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<String>(primaryExpress.name) == primaryValue)
+        case .int:
+            guard let primaryValue = try await (primary as? MagicIntConvert)?.convert(magic: self) else { throw MagicError.missPrimary }
+            query = table.where(Expression<Int>(primaryExpress.name) == primaryValue)
+        default:
+            throw MagicError.missPrimary
+        }
+
+        return try db.scalar(query.count) == 1
+    }
+
+    public func object<Value: MagicObject, Primary: CombineMagicalPrimaryValueWithMagical>(of: Value.Type, primary: Primary) async throws -> Value {
         guard Value().hasPrimaryValue else { throw MagicError.missPrimary }
         guard let primaryExpress = Value().createMirror().createExpresses().first(where: { express in
             express.primary

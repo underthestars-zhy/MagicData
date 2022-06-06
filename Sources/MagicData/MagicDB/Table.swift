@@ -14,10 +14,12 @@ extension MagicData {
 
         let tableName = Expression<String>("table_name")
         let version = Expression<Int>("version")
+        let zIndexCount = Expression<Int>("z_index_count")
 
         try db.run(info.create(ifNotExists: true) { t in
             t.column(tableName, primaryKey: true)
             t.column(version)
+            t.column(zIndexCount)
         })
     }
 
@@ -74,6 +76,8 @@ extension MagicData {
                     }
                 }
             }
+
+            t.column(Expression<Int>("z_index"), unique: true)
         })
 
         try addToTableInfo(object)
@@ -87,8 +91,38 @@ extension MagicData {
         let info = Table("0Table_Info")
         let tableName = Expression<String>("table_name")
         let version = Expression<Int>("version")
+        let zIndexCount = Expression<Int>("z_index_count")
 
-        try db.run(info.insert(tableName <- self.tableName(of: object), version <- 0))
+        try db.run(info.insert(tableName <- self.tableName(of: object), version <- 0, zIndexCount <- 0))
+    }
+
+    func getZIndexOfObject(_ object: MagicObject) throws -> Int {
+        let zindex = Expression<Int>("z_index_count")
+        let tableName = Expression<String>("table_name")
+        let name = self.tableName(of: object)
+
+        let query = Table("0Table_Info").select(zindex).where(tableName == name)
+
+        guard let res = try db.pluck(query) else { throw MagicError.cannotFindZIndex }
+
+        return res[zindex]
+    }
+
+    func addZindex(_ object: MagicObject, orginial: Int) throws {
+        let zindex = Expression<Int>("z_index_count")
+        let tableName = Expression<String>("table_name")
+        let name = self.tableName(of: object)
+
+        let update = Table("0Table_Info").where(tableName == name).update(zindex <- orginial + 1)
+
+        try db.run(update)
+    }
+
+    func getZIndexAndUpdate(_ object: MagicObject) throws -> Int {
+        let zIndex = try getZIndexOfObject(object)
+        try addZindex(object, orginial: zIndex)
+
+        return zIndex
     }
 }
 

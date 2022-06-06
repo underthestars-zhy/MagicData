@@ -46,4 +46,14 @@ extension Mirror {
             label == "hostValue"
         })?.value as? MagicalValueHost
     }
+
+    func getValue(by express: MagicExpress) -> Magical? {
+        guard let magicValue = self.children.first(where: { (label: String?, value: Any) in
+            label == express.name
+        })?.value else { return nil }
+
+        let mirror = Mirror(reflecting: magicValue)
+
+        return getValueFromHost(mirror: mirror)
+    }
 }
