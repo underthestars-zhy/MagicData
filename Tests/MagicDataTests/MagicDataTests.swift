@@ -154,4 +154,45 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(index2, 2)
     }
+
+    func test06() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var sub: Sub
+
+            init() {}
+
+            init(_ sub: Sub) {
+                self.sub = sub
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let sub1 = Sub("hi")
+        let instance = TestModel(sub1)
+
+        try await magic.update(instance)
+
+        let first = try await magic.object(of: TestModel.self).first
+
+        XCTAssertEqual(first?.sub.text, "hi")
+
+        let count = try await magic.object(of: Sub.self).count
+
+        XCTAssertEqual(count, 1)
+    }
 }

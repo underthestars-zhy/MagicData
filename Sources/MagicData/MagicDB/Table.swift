@@ -125,6 +125,14 @@ extension MagicData {
         return zIndex
     }
 
+    func getObject<Object: MagicObject>(by zIndex: Int) async throws -> Object? {
+        let table = Table(tableName(of: Object()))
+
+        guard let row = try db.pluck(table.where(Expression<Int>("z_index") == zIndex)) else { return nil }
+
+        return try await createModel(by: row)
+    }
+
     func createQueryTable(_ primaryExpress: MagicExpress, primary: MagicalPrimaryValue, table: Table) async throws -> Table {
         let query: Table
 

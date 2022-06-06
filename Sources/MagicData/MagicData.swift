@@ -127,4 +127,3 @@ public class MagicData {
     public static let shared = MagicActor()
     private init() { }
 }
-

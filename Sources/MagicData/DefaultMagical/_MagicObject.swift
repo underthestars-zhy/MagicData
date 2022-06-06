@@ -7,19 +7,24 @@
 
 import Foundation
 
-//extension MagicObject: Magical, MagicStringConvert {
-//    public static func create(_ value: String?, magic: MagicData) async throws -> Self? {
-////        if let value = value {
-////            return value
-////        } else {
-////            return nil
-////        }
-//        return nil
-//    }
-//
-//    static public var type: MagicalType = .string
-//
-//    public func convert(magic: MagicData) async throws -> String {
-//        guard self.hasPrimaryValue else { throw MagicError.missPrimary }
-//    }
-//}
+extension MagicObject {
+    static func create(_ value: Int?, magic: MagicData) async throws -> Self? {
+        if let value = value {
+            return try await magic.getObject(by: value)
+        } else {
+            return nil
+        }
+    }
+
+    static var type: MagicalType {
+        return .int
+    }
+
+    func convert(magic: MagicData) async throws -> Int {
+        guard self.hasPrimaryValue else { throw MagicError.missPrimary }
+        try await magic.update(self)
+        let zIndex = try await magic.getZIndexOfObject(self) - 1
+
+        return zIndex
+    }
+}
