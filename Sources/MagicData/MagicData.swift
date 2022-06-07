@@ -35,11 +35,14 @@ public class MagicData {
         try createTableInfoTableIfNotExist()
     }
 
-    public func update(_ object: MagicObject) async throws {
+    @discardableResult
+    public func update(_ object: MagicObject) async throws -> Int {
         try createTable(object)
         // TODO: try updateTable(object)
 
         let table = Table(tableName(of: object))
+
+        let zIndex: Int
 
         if object.hasPrimaryValue {
             guard let primaryExpress = object.createMirror().createExpresses().first(where: { express in
@@ -55,12 +58,18 @@ public class MagicData {
                 let query: Table = try await createQueryTable(primaryExpress, primary: primaryValue, table: table)
 
                 try await db.run(query.update(createSetters(of: object)))
+
+                try await zIndex = getZIndex(of: object)
             } else {
-                try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexAndUpdate(object))]))
+                zIndex = try getZIndexAndUpdate(object)
+                try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))
             }
         } else {
-            try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- getZIndexAndUpdate(object))]))
+            zIndex = try getZIndexAndUpdate(object)
+            try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))
         }
+
+        return zIndex
     }
 
     public func has(of value: MagicObject.Type, primary: CombineMagicalPrimaryValueWithMagical) async throws -> Bool {

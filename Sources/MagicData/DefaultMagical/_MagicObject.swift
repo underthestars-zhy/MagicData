@@ -21,12 +21,6 @@ extension MagicObject {
     }
 
     func convert(magic: MagicData) async throws -> Int {
-        guard self.hasPrimaryValue else { throw MagicError.missPrimary }
-
-        try await magic.update(self)
-
-        let zIndex = try await magic.getZIndex(of: self)
-
-        return zIndex
+        return try await magic.update(self)
     }
 }

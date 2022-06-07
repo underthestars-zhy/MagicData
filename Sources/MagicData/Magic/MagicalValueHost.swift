@@ -11,6 +11,7 @@ class MagicalValueHost: NSObject {
     var value: Any?
     let type: Magical.Type
     var auto = false
+    var zIndex: Int?
 
     func set(value _value: Any?) {
         value = _value

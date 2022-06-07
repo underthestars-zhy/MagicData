@@ -59,6 +59,8 @@ extension MagicData {
                     throw MagicError.connetConvertToMagicConvert
                 }
             }
+
+            host.zIndex = row[Expression<Int>("z_index")]
         }
 
         return model
