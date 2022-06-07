@@ -25,11 +25,11 @@ extension MagicData {
                 }
             case .int:
                 if express.option {
-                    return try await (Expression<Int?>(express.name) <- (express.value as? MagicIntConvert)?.convert(magic: self, object: object))
+                    return try await (Expression<Int?>(express.name) <- (express.value as? MagicIntConvert)?.convert(magic: self))
                 } else {
                     if express.auto {
                         return nil
-                    } else if let value = try await (express.value as? MagicIntConvert)?.convert(magic: self, object: object) {
+                    } else if let value = try await (express.value as? MagicIntConvert)?.convert(magic: self) {
                         return (Expression<Int>(express.name) <- value)
                     } else {
                         throw MagicError.missValue
