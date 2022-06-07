@@ -85,6 +85,7 @@ Now we support theses:
 * `Codable` will be stored as `Blob` in the database.
 * `Arrary` will be stored as `Blob` in the database.
 * `Dictionary` will be stored as `Blob` in the database.
+* `Set` will be stored as `Blob` in the database.
 
 ### Points of Codable
 
