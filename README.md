@@ -148,7 +148,7 @@ try await magic.has(of: TestModel.self, primary: instance1.uuid)
 
 **MagicData** support relationship like core data.
 
-### One to One
+### One to Many
 
 ```swift
 struct TestModel: MagicObject {

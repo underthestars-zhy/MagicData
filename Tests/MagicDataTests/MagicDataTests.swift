@@ -253,4 +253,37 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(count, 1)
     }
+
+    func test08() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var set: Set<String>
+
+            init() {
+                set = []
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel()
+
+        instance.set.insert("hi")
+        instance.set.insert("hello")
+
+        try await magic.update(instance)
+
+        let first = try await magic.object(of: TestModel.self).first
+
+        XCTAssertEqual(first?.set, ["hi", "hello"])
+
+        instance.set.remove("hi")
+
+        try await magic.update(instance)
+
+        let second = try await magic.object(of: TestModel.self).first
+
+        XCTAssertEqual(second?.set, ["hello"])
+    }
 }
