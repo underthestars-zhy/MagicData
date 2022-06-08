@@ -9,7 +9,7 @@ import Foundation
 
 class MagicalValueHost: NSObject {
     var value: Any?
-    let type: Magical.Type
+    let type: any Magical.Type
     var auto = false
     var zIndex: Int?
 
@@ -17,9 +17,10 @@ class MagicalValueHost: NSObject {
         value = _value
     }
 
-    init(value: Any?, type: Magical.Type) {
+    init(value: Any?, type: any Magical.Type) {
         self.value = value
         self.type = type
     }
+    
 }
 

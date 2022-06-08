@@ -9,7 +9,7 @@ import Foundation
 
 public protocol Reversable {}
 
-@propertyWrapper struct PrimaryMagicValue<Value: Magical> where Value: MagicalPrimaryValue {
+@propertyWrapper struct PrimaryMagicValue<Value: Magical>: Equatable, Hashable where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
         get {
             (hostValue.value as? Value) ?? .deafultPrimaryValue
@@ -35,12 +35,16 @@ public protocol Reversable {}
         self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.type == rhs.type && lhs.wrappedValue == rhs.wrappedValue
+    }
 }
 
-@propertyWrapper public struct MagicValue<Value: Magical>: Reversable {
+@propertyWrapper public struct MagicValue<Value: Magical>: Reversable, Equatable, Hashable {
     public var wrappedValue: Value {
         get {
-            (hostValue.value as? Value) ?? .defualtValue!
+            (hostValue.value as! Value)
         }
 
         nonmutating set {
@@ -59,7 +63,7 @@ public protocol Reversable {}
     }
 
     public init() {
-        self.hostValue = .init(value: Value.defualtValue, type: Value.self)
+        self.hostValue = .init(value: nil, type: Value.self)
         self.type = Value.type
     }
 
@@ -67,9 +71,13 @@ public protocol Reversable {}
         self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.type == rhs.type && lhs.wrappedValue == rhs.wrappedValue
+    }
 }
 
-@propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable {
+@propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable, Equatable, Hashable {
     public var wrappedValue: Value? {
         get {
             hostValue.value as? Value
@@ -99,34 +107,38 @@ public protocol Reversable {}
         self.hostValue = .init(value: wrappedValue, type: Value.self)
         self.type = Value.type
     }
-}
 
-@propertyWrapper public struct ReverseMagicValue<Value: Magical, Object: MagicObject> {
-    public var wrappedValue: Value? {
-        get {
-            hostValue.value as? Value
-        }
-
-        nonmutating set {
-            hostValue.value = newValue
-        }
-    }
-
-    internal let hostValue: MagicalValueHost
-    internal let primary: Bool = false
-    internal let type: MagicalType
-    internal let reverse: KeyPath<Object, Reversable>
-
-    public init(reverse: KeyPath<Object, Reversable>) {
-        hostValue = .init(value: nil, type: Value.self)
-        self.type = Value.type
-        self.reverse = reverse
-    }
-
-    public init(wrappedValue: Value?, reverse: KeyPath<Object, Reversable>) {
-        self.hostValue = .init(value: wrappedValue, type: Value.self)
-        self.type = Value.type
-        self.reverse = reverse
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.type == rhs.type && lhs.wrappedValue == rhs.wrappedValue
     }
 }
 
+//@propertyWrapper public struct ReverseMagicValue<Value: Magical, Object: MagicObject> {
+//    public var wrappedValue: Value? {
+//        get {
+//            hostValue.value as? Value
+//        }
+//
+//        nonmutating set {
+//            hostValue.value = newValue
+//        }
+//    }
+//
+//    internal let hostValue: MagicalValueHost
+//    internal let primary: Bool = false
+//    internal let type: MagicalType
+//    internal let reverse: KeyPath<Object, Reversable>
+//
+//    public init(reverse: KeyPath<Object, Reversable>) {
+//        hostValue = .init(value: nil, type: Value.self)
+//        self.type = Value.type
+//        self.reverse = reverse
+//    }
+//
+//    public init(wrappedValue: Value?, reverse: KeyPath<Object, Reversable>) {
+//        self.hostValue = .init(value: wrappedValue, type: Value.self)
+//        self.type = Value.type
+//        self.reverse = reverse
+//    }
+//}
+//

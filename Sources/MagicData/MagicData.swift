@@ -36,7 +36,7 @@ public class MagicData {
     }
 
     @discardableResult
-    public func update(_ object: MagicObject) async throws -> Int {
+    public func update(_ object: some MagicObject) async throws -> Int {
         try createTable(object)
         // TODO: try updateTable(object)
 
@@ -51,7 +51,7 @@ public class MagicData {
                 throw MagicError.missPrimary
             }
 
-            guard let primaryValue = object.createMirror().getValue(by: primaryExpress) as? CombineMagicalPrimaryValueWithMagical else { throw MagicError.missPrimary  }
+            guard let primaryValue = object.createMirror().getValue(by: primaryExpress) as? any CombineMagicalPrimaryValueWithMagical else { throw MagicError.missPrimary  }
             
 
             if try await has(of: type(of: object), primary: primaryValue) {
@@ -72,7 +72,7 @@ public class MagicData {
         return zIndex
     }
 
-    public func has(of value: MagicObject.Type, primary: CombineMagicalPrimaryValueWithMagical) async throws -> Bool {
+    public func has(of value: any MagicObject.Type, primary: any CombineMagicalPrimaryValueWithMagical) async throws -> Bool {
         guard value.init().hasPrimaryValue else { throw MagicError.missPrimary }
         guard let primaryExpress = value.init().createMirror().createExpresses().first(where: { express in
             express.primary

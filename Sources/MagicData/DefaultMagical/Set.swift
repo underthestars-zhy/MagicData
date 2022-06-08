@@ -21,11 +21,11 @@ extension Set: Magical, MagicDataConvert where Element: Codable {
     }
 
     public func convert(magic: MagicData) async throws -> Data {
-        if Element.self is Magical {
+        if Element.self is any Magical {
             throw MagicError.magicalCannotInArraryOrDictionary
         }
 
-        return (try? JSONEncoder().encode(self)) ?? Data()
+        return try JSONEncoder().encode(self)
     }
 }
 

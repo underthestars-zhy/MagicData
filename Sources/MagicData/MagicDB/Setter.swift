@@ -10,7 +10,7 @@ import SQLite
 import CollectionConcurrencyKit
 
 extension MagicData {
-    func createSetters(of object: MagicObject) async throws -> [Setter] {
+    func createSetters(of object: some MagicObject) async throws -> [Setter] {
         return try await object.createMirror().createExpresses().asyncCompactMap({ express in
             switch express.type {
             case .string:

@@ -7,12 +7,6 @@
 
 import Foundation
 
-public protocol Magical {
+public protocol Magical: Equatable {
     static var type: MagicalType { get }
-}
-
-public extension Magical {
-    static var defualtValue: Self? {
-        nil
-    }
 }

@@ -29,7 +29,7 @@ extension Mirror {
         }
     }
 
-    func getValueFromHost(mirror: Mirror) -> Magical? {
+    func getValueFromHost(mirror: Mirror) -> (any Magical)? {
         guard let value = mirror.children.first(where: { (label: String?, value: Any) in
             label == "hostValue"
         })?.value else { return nil }
@@ -38,7 +38,7 @@ extension Mirror {
 
         return (_mirror.children.first { lable, value in
             lable == "value"
-        }?.value as? Magical?)?.flatMap { $0 }
+        }?.value as? (any Magical)?)?.flatMap { $0 }
     }
 
     func getHost() -> MagicalValueHost? {
@@ -47,7 +47,7 @@ extension Mirror {
         })?.value as? MagicalValueHost
     }
 
-    func getValue(by express: MagicExpress) -> Magical? {
+    func getValue(by express: MagicExpress) -> (any Magical)? {
         guard let magicValue = self.children.first(where: { (label: String?, value: Any) in
             label == express.name
         })?.value else { return nil }

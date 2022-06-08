@@ -37,7 +37,7 @@ extension MagicData {
         try getAllTable().contains(tableName)
     }
 
-    func createTable(_ object: MagicObject) throws {
+    func createTable(_ object: some MagicObject) throws {
         if try tableExit(tableName(of: object)) { return }
         let mirror = object.createMirror()
         let expressions = mirror.createExpresses()
@@ -83,11 +83,11 @@ extension MagicData {
         try addToTableInfo(object)
     }
 
-    func tableName(of object: MagicObject) -> String {
+    func tableName(of object: some MagicObject) -> String {
         return "\(type(of: object))"
     }
 
-    func addToTableInfo(_ object: MagicObject) throws {
+    func addToTableInfo(_ object: some MagicObject) throws {
         let info = Table("0Table_Info")
         let tableName = Expression<String>("table_name")
         let version = Expression<Int>("version")
@@ -96,7 +96,7 @@ extension MagicData {
         try db.run(info.insert(tableName <- self.tableName(of: object), version <- 0, zIndexCount <- 0))
     }
 
-    func getZIndexOfObject(_ object: MagicObject) throws -> Int {
+    func getZIndexOfObject(_ object: some MagicObject) throws -> Int {
         let zindex = Expression<Int>("z_index_count")
         let tableName = Expression<String>("table_name")
         let name = self.tableName(of: object)
@@ -108,11 +108,11 @@ extension MagicData {
         return res[zindex]
     }
 
-    func getZIndex(of object: MagicObject) async throws -> Int {
+    func getZIndex(of object: some MagicObject) async throws -> Int {
         object.createMirror().createExpresses().first?.zIndex ?? 0
     }
 
-    func addZindex(_ object: MagicObject, orginial: Int) throws {
+    func addZindex(_ object: some MagicObject, orginial: Int) throws {
         let zindex = Expression<Int>("z_index_count")
         let tableName = Expression<String>("table_name")
         let name = self.tableName(of: object)
@@ -122,7 +122,7 @@ extension MagicData {
         try db.run(update)
     }
 
-    func getZIndexAndUpdate(_ object: MagicObject) throws -> Int {
+    func getZIndexAndUpdate(_ object: some MagicObject) throws -> Int {
         let zIndex = try getZIndexOfObject(object)
         try addZindex(object, orginial: zIndex)
 

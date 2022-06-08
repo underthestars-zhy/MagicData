@@ -12,7 +12,7 @@ struct MagicExpress {
     let primary: Bool
     let option: Bool
     let type: MagicalType
-    let value: Magical?
+    let value: (any Magical)?
     let auto: Bool
     let zIndex: Int
 }
