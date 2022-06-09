@@ -98,15 +98,10 @@ public protocol Reversable {}
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         let defualt = lhs.type == rhs.type && lhs.wrappedValue == rhs.wrappedValue
-        print("->", defualt, lhs.type == rhs.type, lhs.wrappedValue == rhs.wrappedValue)
 
         if let lhsZIndex = lhs.hostValue.zIndex, let rhsZIndex = rhs.hostValue.zIndex {
-            print("1->", lhsZIndex == rhsZIndex)
-            print("----")
             return defualt && lhsZIndex == rhsZIndex
         } else {
-            print("2->", lhs.hashID == rhs.hashID)
-            print("----")
             return defualt && lhs.hashID == rhs.hashID
         }
     }

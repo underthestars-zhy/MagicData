@@ -29,7 +29,13 @@ extension Set: Magical, MagicDataConvert where Element: Codable {
     }
 }
 
-public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: MagicObject {
+public struct MagicalSet<Element>: Magical, MagicDataConvert, ExpressibleByArrayLiteral where Element: MagicObject {
+    public init(arrayLiteral elements: Element...) {
+        self.set = Set<Element>(elements)
+    }
+
+    public typealias ArrayLiteralElement = Element
+
     public static func == (lhs: MagicalSet<Element>, rhs: MagicalSet<Element>) -> Bool {
         return lhs.set == rhs.set
     }
@@ -55,7 +61,7 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
             try await object.convert(magic: magic)
         }
 
-        print(list)
+        print(set.count)
 
         return try JSONEncoder().encode(list)
     }
@@ -80,5 +86,6 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
 
     public mutating func remove(_ element: Element) {
         self.set.remove(element)
+        print(set.count)
     }
 }

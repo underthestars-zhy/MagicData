@@ -64,6 +64,11 @@ public class MagicData {
                 zIndex = try getZIndexAndUpdate(object)
                 try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))
             }
+        } else if let index = object.createMirror().getAllHost().first?.zIndex {
+            zIndex = index
+
+            let query = table.where(Expression<Int>("z_index") == zIndex)
+            try db.run(await query.update(try createSetters(of: object)))
         } else {
             zIndex = try getZIndexAndUpdate(object)
             try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))

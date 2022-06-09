@@ -318,28 +318,50 @@ final class MagicDataTests: XCTestCase {
 
         let instanceCopy1 = try await magic.object(of: TestModel.self, primary: instance.uuid)
 
-//        print(try await magic.getZIndex(of: sub1))
-//        print(try await magic.getZIndex(of: sub2))
-//        let set = Set([sub1, sub2])
-//        print(set.hashValue, instanceCopy1.set.set.hashValue)
+        XCTAssertEqual(instanceCopy1.set, [sub1, sub2])
 
-//        print(sub1.hashValue, sub2.hashValue)
+        instanceCopy1.set.remove(sub1)
 
-//        print(sub1.createMirror().getAllHost().first?.zIndex)
-//        print(sub2.createMirror().getAllHost().first?.zIndex)
+        print(instanceCopy1.set.set.map(\.text))
 
-        print("-------------------")
-        print("start1")
-        guard let item = instanceCopy1.set.set.first(where: { sub in
-            sub.text == "hello"
-        }) else { return }
-        print(item.hashValue, sub1.hashValue)
-        print(item == sub1)
-//        print(instanceCopy1.set.set.contains(sub1))
-//        print("---------")
-//        print("start2")
-//        print(instanceCopy1.set.set.contains(sub2))
+        try await magic.update(instance)
 
-//        XCTAssertEqual(instanceCopy1.set.set, )
+        let instanceCopy2 = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+//        print(instanceCopy2.set.set.map(\.text))
+
+        XCTAssertEqual(instanceCopy2.set, [sub2])
+    }
+
+    func test10() async throws {
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .memory)
+
+        let sub1 = Sub("hello")
+
+        try await magic.update(sub1)
+
+        sub1.text = "hi"
+
+        try await magic.update(sub1)
+
+        let count = try await magic.object(of: Sub.self).count
+
+        XCTAssertEqual(count, 1)
+
+        try await magic.update(Sub("ohh"))
+
+        let count1 = try await magic.object(of: Sub.self).count
+
+        XCTAssertEqual(count1, 2)
     }
 }
