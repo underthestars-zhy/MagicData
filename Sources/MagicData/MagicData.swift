@@ -69,6 +69,10 @@ public class MagicData {
             try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))
         }
 
+        object.createMirror().getAllHost().forEach { host in
+            host.zIndex = zIndex
+        }
+
         return zIndex
     }
 

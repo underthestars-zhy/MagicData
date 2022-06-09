@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MagicalValueHost: NSObject {
+class MagicalValueHost {
     var value: Any?
     let type: any Magical.Type
     var auto = false

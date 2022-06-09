@@ -282,4 +282,64 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(second?.set, ["hello"])
     }
+
+    func test09() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var set: MagicalSet<Sub>
+
+            init() {
+                set = .init([])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .memory)
+
+        let instance = TestModel()
+
+        let sub1 = Sub("hello")
+        let sub2 = Sub("hi")
+
+        instance.set.insert(sub1)
+        instance.set.insert(sub2)
+
+        try await magic.update(instance)
+
+        let instanceCopy1 = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+//        print(try await magic.getZIndex(of: sub1))
+//        print(try await magic.getZIndex(of: sub2))
+//        let set = Set([sub1, sub2])
+//        print(set.hashValue, instanceCopy1.set.set.hashValue)
+
+//        print(sub1.hashValue, sub2.hashValue)
+
+//        print(sub1.createMirror().getAllHost().first?.zIndex)
+//        print(sub2.createMirror().getAllHost().first?.zIndex)
+
+        print("-------------------")
+        print("start1")
+        guard let item = instanceCopy1.set.set.first(where: { sub in
+            sub.text == "hello"
+        }) else { return }
+        print(item.hashValue, sub1.hashValue)
+        print(item == sub1)
+//        print(instanceCopy1.set.set.contains(sub1))
+//        print("---------")
+//        print("start2")
+//        print(instanceCopy1.set.set.contains(sub2))
+
+//        XCTAssertEqual(instanceCopy1.set.set, )
+    }
 }

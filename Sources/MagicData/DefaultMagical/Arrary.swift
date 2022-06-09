@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Array: Magical, MagicDataConvert where Element: Codable & Equatable {
+extension Array: Magical, MagicDataConvert where Element: Codable & Hashable {
     public static func create(_ value: Data?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return try? JSONDecoder().decode(Self.self, from: value)

@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol Magical: Equatable {
+public protocol Magical: Hashable {
     static var type: MagicalType { get }
 }

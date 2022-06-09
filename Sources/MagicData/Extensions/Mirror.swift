@@ -56,4 +56,12 @@ extension Mirror {
 
         return getValueFromHost(mirror: mirror)
     }
+
+    func getAllHost() -> [MagicalValueHost] {
+        return self.children.compactMap { child in
+            let mirror = Mirror(reflecting: child.value)
+
+            return mirror.getHost()
+        }
+    }
 }
