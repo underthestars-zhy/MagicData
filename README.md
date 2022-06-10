@@ -151,20 +151,47 @@ try await magic.has(of: TestModel.self, primary: instance1.uuid)
 
 ```swift
 struct TestModel: MagicObject {
+@PrimaryMagicValue var uuid: UUID
+
+@MagicValue var sub: Sub
+
+init() {}
+
+init(_ sub: Sub) {
+self.sub = sub
+}
+}
+
+struct Sub: MagicObject {
+@PrimaryMagicValue var uuid: UUID
+
+@MagicValue var text: String
+
+init() {}
+
+init(_ text: String) {
+self.text = text
+}
+}
+```
+
+You could use `@OptionMagicValue` as well. This kind of relation is a little different of coredata's. Because it isn't a lazy value. That means, it will fetch the `sub` in the database, when you fetch the `TestModel`.
+
+
+### Many to Many
+
+```swift
+struct TestModel: MagicObject {
     @PrimaryMagicValue var uuid: UUID
 
-    @MagicValue var sub: Sub
+    @MagicValue var set: MagicalSet<Sub>
 
-    init() {}
-
-    init(_ sub: Sub) {
-        self.sub = sub
+    init() {
+        set = .init([])
     }
 }
 
 struct Sub: MagicObject {
-    @PrimaryMagicValue var uuid: UUID
-
     @MagicValue var text: String
 
     init() {}
@@ -175,4 +202,4 @@ struct Sub: MagicObject {
 }
 ```
 
-You could use `@OptionMagicValue` as well. This kind of relation is a little different of coredata's. Because it isn't a lazy value. That means, it will fetch the `sub` in the database, when you fetch the `TestModel`.
+`MagicalSet` just like a default set, but it only can store `MagicObject`.
