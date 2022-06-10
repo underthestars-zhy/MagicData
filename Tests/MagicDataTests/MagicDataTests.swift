@@ -322,13 +322,9 @@ final class MagicDataTests: XCTestCase {
 
         instanceCopy1.set.remove(sub1)
 
-        print(instanceCopy1.set.set.map(\.text))
-
-        try await magic.update(instance)
+        try await magic.update(instanceCopy1)
 
         let instanceCopy2 = try await magic.object(of: TestModel.self, primary: instance.uuid)
-
-//        print(instanceCopy2.set.set.map(\.text))
 
         XCTAssertEqual(instanceCopy2.set, [sub2])
     }

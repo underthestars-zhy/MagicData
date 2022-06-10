@@ -117,9 +117,7 @@ Some value can be used in the `@PrimaryMagicValue`:
 ```swift
 try await magic.update(object)
 ```
-
-If object don't have primary value, every `update` is like `add`.
-If object has primary, `update` or `add` will base on whether it has been stored in the database.
+If object already exits in the database, this will `update` the data.
 
 ## Query All
 
