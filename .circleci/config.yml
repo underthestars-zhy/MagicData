@@ -15,7 +15,7 @@ jobs:
           command: swift build -v
       - run:
           name: Test
-          command: swift test -v -Xfrontend -enable-experimental-concurrenc -Xfrontend -disable-availability-checking
+          command: swift test -v -c release -Xfrontend -enable-experimental-concurrenc -Xfrontend -disable-availability-checking
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
