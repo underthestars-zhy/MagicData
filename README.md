@@ -2,6 +2,11 @@
 
 A replacement of SQlite, CoreData or Realm. It is very easy to use and is a light version.
 
+## Support
+- macOs 12 or above
+- iOS 13 or above
+- Linux with some setting of [SQLite](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Linux.md) 
+
 ## Guides
 
 ### MagicData
