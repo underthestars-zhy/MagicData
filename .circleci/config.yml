@@ -10,18 +10,12 @@ jobs:
       xcode: 14.0.0
     steps:
       - checkout
-      - run: 
-          name: Emvironment
-          command: install_name_tool -change \
-                    /usr/lib/swift/libswift_Concurrency.dylib \
-                    /Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2020-11-17-a.xctoolchain/usr/lib/swift/macosx/libswift_Concurrency.dylib \ 
-                    .build/x86_64-apple-macosx/debug/AsyncAwait
       - run:
           name: Build
           command: swift build -v
       - run:
           name: Test
-          command: swift test -v
+          command: swift test -v -Xfrontend -enable-experimental-concurrenc -Xfrontend -disable-availability-checking
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
