@@ -360,4 +360,114 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(count1, 2)
     }
+
+    func test11() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var set: MagicalSet<Sub>
+
+            init() {
+                set = .init([])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let sub1 = Sub("hi")
+        let sub2 = Sub("hi")
+
+        XCTAssertTrue(sub1 != sub2)
+
+        let magic = try await MagicData(type: .memory)
+
+        try await magic.update(sub1)
+
+        let sub3 = try await magic.object(of: Sub.self).first
+        let sub4 = try await magic.object(of: Sub.self).first
+
+        XCTAssertTrue(sub3 == sub4)
+        XCTAssertTrue(sub3 != sub1)
+    }
+
+    func test12() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var set: MagicalSet<Sub>
+
+            init() {
+                set = .init([])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .memory)
+
+        let sub1 = Sub("hi")
+        let sub2 = Sub("hello")
+
+        let instance = TestModel()
+        instance.set.insert(sub1)
+        instance.set.insert(sub2)
+
+        try await magic.update(instance)
+
+        let subs = try await magic.object(of: Sub.self)
+        let sub3 = subs.first
+        XCTAssertEqual(subs.count, 2)
+
+        let sub3Fathers = sub3?.father
+
+        XCTAssertEqual(sub3Fathers?.count, 1)
+
+        let instance2 = TestModel()
+        instance2.set.insert(sub1)
+        instance2.set.insert(sub2)
+
+        try await magic.update(instance2)
+
+        let subs2 = try await magic.object(of: Sub.self)
+        let sub4 = subs2.first
+        XCTAssertEqual(subs2.count, 2)
+
+        let sub4Fathers = sub4?.father
+
+        XCTAssertEqual(sub4Fathers?.count, 2)
+    }
+
+    func test13() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {
+
+            }
+        }
+
+        let test1 = TestModel()
+        let test2 = TestModel()
+        test2.uuid = test1.uuid
+
+        XCTAssertTrue(test1 == test2)
+    }
 }

@@ -138,6 +138,15 @@ public class MagicData {
             return try await self.createModel(by: row)
         }
     }
+
+    func row<Value: MagicObject>(of: Value.Type) async throws -> [Row] {
+        try createTable(Value())
+        // TODO: try updateTable(object)
+
+        let table = Table("\(type(of: Value().self))")
+
+        return try db.prepare(table).map { $0 }
+    }
 }
 
 

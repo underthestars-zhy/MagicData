@@ -203,3 +203,44 @@ struct Sub: MagicObject {
 ```
 
 `MagicalSet` just like a default set, but it only can store `MagicObject`.
+
+### Reverse
+
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var set: MagicalSet<Sub>
+
+    init() {
+        set = .init([])
+    }
+}
+
+struct Sub: MagicObject {
+    @MagicValue var text: String
+    @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
+
+    init() {}
+
+    init(_ text: String) {
+        self.text = text
+    }
+}
+```
+
+You cannot set the value of `@ReverseMagicValue`. And the `AsyncMagicSet` is an `AsyncSequence`.
+
+## Hashable & Equatable
+
+1. All unsaved value which don't has primary value are always not equal
+2. All unsaved value which has primary value and have other values are always not equal
+3. All unsaved value which has primary value and don't have other values are always equal
+4. All saved value which has same index in the database are always equal
+
+For these reasons, you should not use the defualt `Hashable & Equatable` unless you know them clearly.
+
+This best way to test Equatable is:
+
+1. Use primary value
+2. test primary value is equal or not

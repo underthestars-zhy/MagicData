@@ -64,4 +64,22 @@ extension Mirror {
             return mirror.getHost()
         }
     }
+
+    func getAllReverse() -> [_ReverseMagicValue] {
+        return self.children.compactMap { (label: String?, value: Any) in
+            value as? _ReverseMagicValue
+        }
+    }
+
+    func getType() -> (any MagicObject.Type)? {
+        return self.children.first { (label: String?, value: Any) in
+            label == "type"
+        }?.value as? (any MagicObject.Type)
+    }
+
+    func getIDHost() -> MagicalIDHost? {
+        return self.children.first { (label: String?, value: Any) in
+            label == "hostValue"
+        }?.value as? MagicalIDHost
+    }
 }

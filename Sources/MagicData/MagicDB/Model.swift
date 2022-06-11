@@ -63,6 +63,44 @@ extension MagicData {
             host.zIndex = row[Expression<Int>("z_index")]
         }
 
+        let allReverse = model.createMirror().getAllReverse()
+
+        guard let zIndex = model.createMirror().getAllHost().first?.zIndex else { throw MagicError.missValue }
+
+        for reverse in allReverse {
+            let reverseMirror = Mirror(reflecting: reverse)
+            guard let idHost = reverseMirror.getIDHost() else { continue }
+
+            idHost.zIndex = zIndex
+
+            guard let type = reverseMirror.getType() else { continue }
+            let _object = type.init()
+            let rows = try await self.row(of: type)
+            guard let reversable = reverse.createProjectValue(_object) else { continue }
+            guard let name = _object.createMirror().children.first(where: { (label: String?, value: Any) in
+                (value as? Reversable)?.reversableID == reversable.reversableID
+            })?.label else { continue }
+
+            var ids = [Int]()
+
+            for row in rows {
+                let _zIndex = row[Expression<Int>("z_index")]
+                if reversable.isSet() {
+                    guard let data = row[Expression<Data?>(name)] else { continue }
+                    if try JSONDecoder().decode([Int].self, from: data).contains(zIndex) {
+                        ids.append(_zIndex)
+                    }
+                } else {
+                    guard let int = row[Expression<Int?>(name)] else { continue }
+                    if int == zIndex {
+                        ids.append(_zIndex)
+                    }
+                }
+            }
+
+            idHost.setValue(ids, magic: self)
+        }
+
         return model
     }
 }

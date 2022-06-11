@@ -7,7 +7,10 @@
 
 import Foundation
 
-public protocol Reversable {}
+public protocol Reversable {
+    func isSet() -> Bool
+    var reversableID: UUID { get }
+}
 
 @propertyWrapper struct PrimaryMagicValue<Value: Magical>: Hashable where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
@@ -24,7 +27,6 @@ public protocol Reversable {}
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = true
     internal let type: MagicalType
-    internal let hashID = UUID()
 
     public init() {
         self.hostValue = .init(value: Value.deafultPrimaryValue, type: Value.self)
@@ -41,22 +43,22 @@ public protocol Reversable {}
         if let zIndex = hostValue.zIndex {
             hasher.combine("\(self.type)\(self.wrappedValue)\(self.primary)\(zIndex)")
         } else {
-            hasher.combine("\(self.type)\(self.wrappedValue)\(self.primary)\(hashID)")
+            hasher.combine("\(self.type)\(self.wrappedValue)\(self.primary)\(wrappedValue)")
         }
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        let defualt = lhs.type == rhs.type && lhs.wrappedValue == rhs.wrappedValue
-
-        if let lhsZIndex = lhs.hostValue.zIndex, let rhsZIndex = rhs.hostValue.zIndex {
-            return defualt && lhsZIndex == rhsZIndex
-        } else {
-            return defualt && lhs.hashID == rhs.hashID
-        }
+        lhs.hashValue == rhs.hashValue
     }
 }
 
 @propertyWrapper public struct MagicValue<Value: Magical>: Reversable, Hashable {
+    public func isSet() -> Bool {
+        return "\(Value.self)".hasPrefix("MagicalSet")
+    }
+
+    public var reversableID: UUID = .init()
+
     public var wrappedValue: Value {
         get {
             (hostValue.value as! Value)
@@ -108,6 +110,12 @@ public protocol Reversable {}
 }
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable, Hashable {
+    public func isSet() -> Bool {
+        return "\(Value.self)".hasPrefix("MagicalSet")
+    }
+
+    public var reversableID: UUID = .init()
+    
     public var wrappedValue: Value? {
         get {
             hostValue.value as? Value
@@ -166,32 +174,48 @@ public protocol Reversable {}
     }
 }
 
-//@propertyWrapper public struct ReverseMagicValue<Value: Magical, Object: MagicObject> {
-//    public var wrappedValue: Value? {
-//        get {
-//            hostValue.value as? Value
-//        }
-//
-//        nonmutating set {
-//            hostValue.value = newValue
-//        }
-//    }
-//
-//    internal let hostValue: MagicalValueHost
-//    internal let primary: Bool = false
-//    internal let type: MagicalType
-//    internal let reverse: KeyPath<Object, Reversable>
-//
-//    public init(reverse: KeyPath<Object, Reversable>) {
-//        hostValue = .init(value: nil, type: Value.self)
-//        self.type = Value.type
-//        self.reverse = reverse
-//    }
-//
-//    public init(wrappedValue: Value?, reverse: KeyPath<Object, Reversable>) {
-//        self.hostValue = .init(value: wrappedValue, type: Value.self)
-//        self.type = Value.type
-//        self.reverse = reverse
-//    }
-//}
-//
+public protocol _ReverseMagicValue {
+    func createProjectValue(_ object: any MagicObject) -> Reversable?
+}
+
+@propertyWrapper public struct ReverseMagicValue<Object: MagicObject, Value: _AsyncMagicalSet>: _ReverseMagicValue, Hashable {
+    public var wrappedValue: Value {
+        if let magic = hostValue.magic {
+            return Value.init(hostValue.value, magic: magic)
+        }
+
+        return Value.init()
+    }
+
+    internal let reverse: KeyPath<Object, Reversable>
+    internal let hostValue = MagicalIDHost()
+    internal let type: any MagicObject.Type
+    internal let hashID = UUID()
+
+
+    public init(_ reverse: KeyPath<Object, Reversable>) {
+        self.reverse = reverse
+        self.type = Object.self
+    }
+
+    public func createProjectValue(_ object: any MagicObject) -> Reversable? {
+        if let object = object as? Object {
+            return object[keyPath: reverse]
+        }
+
+        return nil
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        if let zIndex = hostValue.zIndex {
+            hasher.combine("\(reverse)\(type)\(zIndex)")
+        } else {
+            hasher.combine("\(reverse)\(type)\(hashID)")
+        }
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.hashValue == rhs.hashValue
+    }
+}
+
