@@ -10,12 +10,8 @@ jobs:
       xcode: 14.0.0
     steps:
       - checkout
-      - run:
-          name: Build
-          command: swift build -v
-      - run:
-          name: Test
-          command: swift test -Xswiftc -Xfrontend -Xswiftc -enable-experimental-concurrency
+      - run: swift build
+      - run: swift test
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
