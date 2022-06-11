@@ -117,7 +117,7 @@ Some value can be used in the `@PrimaryMagicValue`:
 ```swift
 try await magic.update(object)
 ```
-If object already exits in the database, this will `update` the data.
+If object already exits in the database, this will `update` the data. When update the zIndex of the object will automatically update.
 
 ## Query All
 
