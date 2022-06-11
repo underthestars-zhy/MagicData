@@ -13,9 +13,9 @@ jobs:
       - run: 
           name: Emvironment
           command: install_name_tool -change \
-  /usr/lib/swift/libswift_Concurrency.dylib \
-  /Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2020-11-17-a.xctoolchain/usr/lib/swift/macosx/libswift_Concurrency.dylib \ 
-  .build/x86_64-apple-macosx/debug/AsyncAwait
+                    /usr/lib/swift/libswift_Concurrency.dylib \
+                    /Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2020-11-17-a.xctoolchain/usr/lib/swift/macosx/libswift_Concurrency.dylib \ 
+                    .build/x86_64-apple-macosx/debug/AsyncAwait
       - run:
           name: Build
           command: swift build -v
