@@ -117,7 +117,7 @@ Some value can be used in the `@PrimaryMagicValue`:
 ```swift
 try await magic.update(object)
 ```
-If object already exits in the database, this will `update` the data. When update the zIndex of the object will automatically update.
+If object already exits in the database (due to the zIndex), this will `update` the data. When update the zIndex of the object will automatically update.
 
 ## Query All
 
@@ -244,3 +244,9 @@ This best way to test Equatable is:
 
 1. Use primary value
 2. test primary value is equal or not
+
+## What is ZIndex
+
+ZIndex is `MagicalData`'s own primary key. It will automatically add to your table. We use this key to judge whether the two objects are equal, or whether the object is in the database.<br>
+ZIndex is `nil` when the object hasn't saved.<br>
+You cannot get the ZIndex through the `MagicalData`, but maybe we will make it public in the future.
