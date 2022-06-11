@@ -12,7 +12,7 @@ public protocol Reversable {
     var reversableID: UUID { get }
 }
 
-@propertyWrapper struct PrimaryMagicValue<Value: Magical>: Hashable where Value: MagicalPrimaryValue {
+@propertyWrapper public struct PrimaryMagicValue<Value: Magical>: Hashable where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
         get {
             (hostValue.value as! Value)

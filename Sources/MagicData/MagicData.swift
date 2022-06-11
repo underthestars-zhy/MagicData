@@ -138,6 +138,11 @@ public class MagicData {
             return try await self.createModel(by: row)
         }
     }
+
+    public func delete(_ object: some MagicObject) async throws {
+        try createTable(object)
+        // TODO: try updateTable(object)
+    }
 }
 
 

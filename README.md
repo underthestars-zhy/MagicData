@@ -3,9 +3,9 @@
 A replacement of SQlite, CoreData or Realm. It is very easy to use and is a light version.
 
 ## Support
-- macOs 12 or above
+- macOS 12 or above
 - iOS 13 or above
-- Linux with some setting of [SQLite](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Linux.md) 
+- Linux with some settings of [SQLite](https://github.com/stephencelis/SQLite.swift/blob/master/Documentation/Linux.md) 
 
 ## Guides
 
@@ -255,3 +255,9 @@ This best way to test Equatable is:
 ZIndex is `MagicalData`'s own primary key. It will automatically add to your table. We use this key to judge whether the two objects are equal, or whether the object is in the database.<br>
 ZIndex is `nil` when the object hasn't saved.<br>
 You cannot get the ZIndex through the `MagicalData`, but maybe we will make it public in the future.
+
+## Compare With Realm
+
+### Realm
+
+create 100 Object: 2.3450679779052734, 38.1mb
