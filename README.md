@@ -238,7 +238,7 @@ struct TestModel: MagicObject {
 
 struct Sub: MagicObject {
     @MagicValue var text: String
-    @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
+    @ReverseMagicValue(\TestModel.$set) var father: AsyncReverseMagicSet<TestModel>
 
     init() {}
 
@@ -248,7 +248,7 @@ struct Sub: MagicObject {
 }
 ```
 
-You cannot set the value of `@ReverseMagicValue`. And the `AsyncMagicSet` is an `AsyncSequence`.
+You cannot set the value of `@ReverseMagicValue`. And the `AsyncReverseMagicSet` is an `AsyncSequence`.
 
 ### Points of MagicalSet
 

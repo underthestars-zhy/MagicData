@@ -374,7 +374,7 @@ final class MagicDataTests: XCTestCase {
 
         struct Sub: MagicObject {
             @MagicValue var text: String
-            @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
+            @ReverseMagicValue(\TestModel.$set) var father: AsyncReverseMagicSet<TestModel>
 
             init() {}
 

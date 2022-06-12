@@ -12,7 +12,7 @@ public protocol _AsyncMagicalSet {
     init()
 }
 
-public struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
+public struct AsyncReverseMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
     private let ids: Set<Int>
     private let magic: MagicData?
 
@@ -27,13 +27,13 @@ public struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObjec
     }
 }
 
-public extension AsyncMagicSet {
-    static func == (lhs: AsyncMagicSet<Element>, rhs: AsyncMagicSet<Element>) -> Bool {
+public extension AsyncReverseMagicSet {
+    static func == (lhs: AsyncReverseMagicSet<Element>, rhs: AsyncReverseMagicSet<Element>) -> Bool {
         return lhs.ids == rhs.ids
     }
 }
 
-extension AsyncMagicSet: AsyncSequence {
+extension AsyncReverseMagicSet: AsyncSequence {
     public typealias Element = Element
 
     public struct AsyncIterator : AsyncIteratorProtocol {
@@ -55,7 +55,7 @@ extension AsyncMagicSet: AsyncSequence {
     }
 }
 
-public extension AsyncMagicSet {
+public extension AsyncReverseMagicSet {
     var count: Int {
         ids.count
     }

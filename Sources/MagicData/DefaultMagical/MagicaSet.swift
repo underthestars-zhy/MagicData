@@ -70,6 +70,14 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
             perform(object)
         }
     }
+
+    public mutating func deduplication() {
+        let _set = self.set
+        self.set = []
+        for item in _set {
+            self.insert(item)
+        }
+    }
 }
 
 extension MagicalSet: ExpressibleByArrayLiteral {
