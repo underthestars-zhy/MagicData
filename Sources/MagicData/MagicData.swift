@@ -59,7 +59,8 @@ public class MagicData {
 
                 try await db.run(query.update(createSetters(of: object)))
 
-                try await zIndex = getZIndex(of: object)
+                guard let _zIndex = getZIndex(of: object) else { throw MagicError.missValue }
+                zIndex = _zIndex
             } else {
                 zIndex = try getZIndexAndUpdate(object)
                 try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))
@@ -139,9 +140,26 @@ public class MagicData {
         }
     }
 
-    public func delete(_ object: some MagicObject) async throws {
+    public func remove(_ object: some MagicObject) throws {
         try createTable(object)
         // TODO: try updateTable(object)
+
+        let table = Table(tableName(of: object))
+
+        guard let zIndex = getZIndex(of: object) else { throw MagicError.objectHasNotSaved }
+
+        let query = table.where(Expression<Int>("z_index") == zIndex)
+
+        try db.run(query.delete())
+    }
+
+    public func removeAll(of type: any MagicObject.Type) throws {
+        try createTable(type.init())
+        // TODO: try updateTable(object)
+
+        let table = Table(tableName(of: type.init()))
+
+        try db.run(table.delete())
     }
 }
 

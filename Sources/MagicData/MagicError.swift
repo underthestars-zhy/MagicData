@@ -17,4 +17,5 @@ public enum MagicError: Error {
     case cannotFindZIndex
     case magicalCannotInArraryOrDictionary
     case missObject
+    case objectHasNotSaved
 }

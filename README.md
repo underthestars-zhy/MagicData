@@ -15,7 +15,7 @@ We use **MagicData** manage all the magic objects, which means **MagicData** can
 
 Here are two ways to create **MagicData**.
 ```swift
-let magic = try awiat MagicData() // This will create a database at the app's document path
+let magic = try await MagicData() // This will create a database at the app's document path
 let magic try await MagicData(path: URL(fileURLWithPath: "").path) // This will create a database at your custom path
 let magic = try await MagicData(type: .temporary) // This will create a auto-delete database
 let magic = try await MagicData(type: .memory) // This will create a database in the memory
@@ -27,24 +27,24 @@ let magic = try await MagicData(type: .memory) // This will create a database in
 
 ```swift
 struct TestModel: MagicObject {
-@PrimaryMagicValue var id: String
+    @PrimaryMagicValue var id: String
 
-@MagicValue var name: String
-@MagicValue var age: Int
+    @MagicValue var name: String
+    @MagicValue var age: Int
 
-@OptionMagicValue var school: Data?
-@OptionMagicValue var petName: String?
-@OptionMagicValue var hight: Double?
+    @OptionMagicValue var school: Data?
+    @OptionMagicValue var petName: String?
+    @OptionMagicValue var hight: Double?
 
-var customString: String {
-"My ID: \(id), name: \(name)"
-}
+    var customString: String {
+        "My ID: \(id), name: \(name)"
+    }
 
-init() {}
+    init() {}
 
-init(name: String) {
-self.name = name
-}
+    init(name: String) {
+        self.name = name
+    }
 }
 ```
 
@@ -98,8 +98,8 @@ First of all, we cannot store `Codable`, but it can be stored as `MagicalCodable
 
 ```swift
 struct Job: MagicalCodable {
-let title: String
-let salary: Int
+    let title: String
+    let salary: Int
 }
 
 @OptionMagicValue var job: Job?
@@ -123,6 +123,20 @@ Some value can be used in the `@PrimaryMagicValue`:
 try await magic.update(object)
 ```
 If object already exits in the database (due to the zIndex), this will `update` the data. When update the zIndex of the object will automatically update.
+
+## Remove
+
+### Remove one object
+
+```swift
+try await magic.remove(test1)
+```
+
+### Remove All
+
+```swift
+try await magic.removeAll(of: TestModel.self)
+```
 
 ## Query All
 
@@ -236,20 +250,6 @@ struct Sub: MagicObject {
 
 You cannot set the value of `@ReverseMagicValue`. And the `AsyncMagicSet` is an `AsyncSequence`.
 
-## Hashable & Equatable
-
-1. All unsaved value which don't has primary value are always not equal
-2. All unsaved value which has primary value and have other values are always not equal
-3. All unsaved value which has primary value and don't have other values are always equal
-4. All saved value which has same index in the database are always equal
-
-For these reasons, you should not use the defualt `Hashable & Equatable` unless you know them clearly.
-
-This best way to test Equatable is:
-
-1. Use primary value
-2. test primary value is equal or not
-
 ## What is ZIndex
 
 ZIndex is `MagicalData`'s own primary key. It will automatically add to your table. We use this key to judge whether the two objects are equal, or whether the object is in the database.<br>
@@ -271,3 +271,5 @@ We use Realm and MagicData create 1000 objects.
 * Time: 1.1123838424682617s
 * Memory: 32.5mb
 * Code Line: 48
+<br>
+**MagicData won**
