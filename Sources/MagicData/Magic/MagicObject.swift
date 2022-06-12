@@ -15,7 +15,7 @@ public protocol MagicObject: Magical, MagicIntConvert, Hashable {
     init()
 }
 
-extension MagicObject {
+public extension MagicObject {
     func createMirror() -> Mirror {
         Mirror(reflecting: self)
     }

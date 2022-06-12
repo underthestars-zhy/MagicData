@@ -64,8 +64,8 @@ extension MagicalSet: ExpressibleByArrayLiteral {
 }
 
 
-extension MagicalSet {
-    public static func == (lhs: MagicalSet<Element>, rhs: MagicalSet<Element>) -> Bool {
+public extension MagicalSet {
+    static func == (lhs: MagicalSet<Element>, rhs: MagicalSet<Element>) -> Bool {
         return lhs.set == rhs.set
     }
 }

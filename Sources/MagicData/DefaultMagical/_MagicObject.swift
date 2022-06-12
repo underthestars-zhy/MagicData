@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension MagicObject {
+public extension MagicObject {
     static func create(_ value: Int?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return try await magic.getObject(by: value)

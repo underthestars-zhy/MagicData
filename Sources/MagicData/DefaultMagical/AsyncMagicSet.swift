@@ -12,7 +12,7 @@ public protocol _AsyncMagicalSet {
     init()
 }
 
-struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
+public struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
     private let ids: [Int]
     private let magic: MagicData?
 
@@ -27,19 +27,19 @@ struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
     }
 }
 
-extension AsyncMagicSet {
-    public static func == (lhs: AsyncMagicSet<Element>, rhs: AsyncMagicSet<Element>) -> Bool {
+public extension AsyncMagicSet {
+    static func == (lhs: AsyncMagicSet<Element>, rhs: AsyncMagicSet<Element>) -> Bool {
         return lhs.ids == rhs.ids
     }
 }
 
 extension AsyncMagicSet: AsyncSequence {
-    typealias Element = Element
+    public typealias Element = Element
 
-    struct AsyncIterator : AsyncIteratorProtocol {
+    public struct AsyncIterator : AsyncIteratorProtocol {
         var ids: [Int]
         let magic: MagicData?
-        mutating func next() async throws -> Element? {
+        mutating public func next() async throws -> Element? {
             print(ids)
             guard let magic else { return nil }
             try Task.checkCancellation()
@@ -51,12 +51,12 @@ extension AsyncMagicSet: AsyncSequence {
         }
     }
 
-    func makeAsyncIterator() -> AsyncIterator {
+    public func makeAsyncIterator() -> AsyncIterator {
         return AsyncIterator(ids: ids, magic: magic)
     }
 }
 
-extension AsyncMagicSet {
+public extension AsyncMagicSet {
     var count: Int {
         ids.count
     }
