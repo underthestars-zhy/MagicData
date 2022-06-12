@@ -18,7 +18,7 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
                 try await Element.create(int, magic: magic)
             })
 
-            return .init(set: Set<Element>(list))
+            return .init(list)
         } else {
             return nil
         }
@@ -32,14 +32,13 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
         return try JSONEncoder().encode(list)
     }
 
-    public var set: Set<Element>
+    public var set: [Element]
 
     public init(_ sequence: some Sequence<Element>) {
-        self.set = .init(sequence)
-    }
-
-    public init(set: Set<Element>) {
-        self.set = set
+        self.set = []
+        for item in sequence {
+            self.insert(item)
+        }
     }
 
     public init() {
@@ -47,31 +46,45 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
     }
 
     public mutating func insert(_ element: Element) {
-        self.set.insert(element)
+        if let zIndex = element.createMirror().getAllHost().first?.zIndex {
+            if !self.set.contains(where: { object in
+                object.createMirror().getAllHost().first?.zIndex == zIndex
+            }) {
+                self.set.append(element)
+            }
+        } else {
+            self.set.append(element)
+        }
     }
 
     public mutating func remove(_ element: Element) {
-        self.set.remove(element)
+        if let zIndex = element.createMirror().getAllHost().first?.zIndex {
+            self.set.removeAll { object in
+                object.createMirror().getAllHost().first?.zIndex == zIndex
+            }
+        }
+    }
+
+    public mutating func removeAll(where perform: (Element) -> Bool) {
+        self.set.removeAll { object in
+            perform(object)
+        }
     }
 }
 
 extension MagicalSet: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Element...) {
-        self.set = Set<Element>(elements)
+        self.set = []
+        for item in elements {
+            self.insert(item)
+        }
     }
 
     public typealias ArrayLiteralElement = Element
 }
 
-
-public extension MagicalSet {
-    static func == (lhs: MagicalSet<Element>, rhs: MagicalSet<Element>) -> Bool {
-        return lhs.set == rhs.set
-    }
-}
-
 extension MagicalSet: Sequence {
-    public func makeIterator() -> some IteratorProtocol {
-        return set.makeIterator()
+    public func makeIterator() -> IndexingIterator<[Element]> {
+        return self.set.makeIterator()
     }
 }

@@ -318,7 +318,7 @@ final class MagicDataTests: XCTestCase {
 
         let instanceCopy1 = try await magic.object(of: TestModel.self, primary: instance.uuid)
 
-        XCTAssertEqual(instanceCopy1.set, [sub1, sub2])
+        XCTAssertEqual(Set(instanceCopy1.set.map(\.text)), Set([sub1, sub2].map(\.text)))
 
         instanceCopy1.set.remove(sub1)
 
@@ -326,7 +326,7 @@ final class MagicDataTests: XCTestCase {
 
         let instanceCopy2 = try await magic.object(of: TestModel.self, primary: instance.uuid)
 
-        XCTAssertEqual(instanceCopy2.set, [sub2])
+        XCTAssertEqual(instanceCopy2.set.map(\.text), [sub2].map(\.text))
     }
 
     func test10() async throws {
@@ -359,44 +359,6 @@ final class MagicDataTests: XCTestCase {
         let count1 = try await magic.object(of: Sub.self).count
 
         XCTAssertEqual(count1, 2)
-    }
-
-    func test11() async throws {
-        struct TestModel: MagicObject {
-            @PrimaryMagicValue var uuid: UUID
-
-            @MagicValue var set: MagicalSet<Sub>
-
-            init() {
-                set = .init([])
-            }
-        }
-
-        struct Sub: MagicObject {
-            @MagicValue var text: String
-            @ReverseMagicValue(\TestModel.$set) var father: AsyncMagicSet<TestModel>
-
-            init() {}
-
-            init(_ text: String) {
-                self.text = text
-            }
-        }
-
-        let sub1 = Sub("hi")
-        let sub2 = Sub("hi")
-
-        XCTAssertTrue(sub1 != sub2)
-
-        let magic = try await MagicData(type: .memory)
-
-        try await magic.update(sub1)
-
-        let sub3 = try await magic.object(of: Sub.self).first
-        let sub4 = try await magic.object(of: Sub.self).first
-
-        XCTAssertTrue(sub3 == sub4)
-        XCTAssertTrue(sub3 != sub1)
     }
 
     func test12() async throws {
@@ -453,22 +415,6 @@ final class MagicDataTests: XCTestCase {
         let sub4Fathers = sub4?.father
 
         XCTAssertEqual(sub4Fathers?.count, 2)
-    }
-
-    func test13() async throws {
-        struct TestModel: MagicObject {
-            @PrimaryMagicValue var uuid: UUID
-
-            init() {
-
-            }
-        }
-
-        let test1 = TestModel()
-        let test2 = TestModel()
-        test2.uuid = test1.uuid
-
-        XCTAssertTrue(test1 == test2)
     }
 
     func test14() async throws {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol MagicObject: Magical, MagicIntConvert, Hashable {
+public protocol MagicObject: Magical, MagicIntConvert {
     func createMirror() -> Mirror
     subscript(checkedMirrorDescendant key: String) -> Any { get }
     var hasPrimaryValue: Bool { get }

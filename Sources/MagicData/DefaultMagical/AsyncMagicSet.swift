@@ -13,11 +13,11 @@ public protocol _AsyncMagicalSet {
 }
 
 public struct AsyncMagicSet<Element>: _AsyncMagicalSet where Element: MagicObject {
-    private let ids: [Int]
+    private let ids: Set<Int>
     private let magic: MagicData?
 
     public init(_ ids: [Int], magic: MagicData) {
-        self.ids = ids
+        self.ids = Set(ids)
         self.magic = magic
     }
 
@@ -40,7 +40,6 @@ extension AsyncMagicSet: AsyncSequence {
         var ids: [Int]
         let magic: MagicData?
         mutating public func next() async throws -> Element? {
-            print(ids)
             guard let magic else { return nil }
             try Task.checkCancellation()
 
@@ -52,7 +51,7 @@ extension AsyncMagicSet: AsyncSequence {
     }
 
     public func makeAsyncIterator() -> AsyncIterator {
-        return AsyncIterator(ids: ids, magic: magic)
+        return AsyncIterator(ids: ids.map { $0 }, magic: magic)
     }
 }
 

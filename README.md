@@ -250,6 +250,37 @@ struct Sub: MagicObject {
 
 You cannot set the value of `@ReverseMagicValue`. And the `AsyncMagicSet` is an `AsyncSequence`.
 
+### Points of MagicalSet
+
+`MagicalSet` is not a normal set, it only can promise you that it save a set in the database, and get a set from the database. But in the runtime, it can be a non-set value. 
+
+### Insert
+
+```swift
+instance.set.insert(sub1)
+```
+
+If the object has saved, and the set doesn't contain the value which has the same `zIndex`, the value will be insterted.
+If the object hasn't instert, the value will be always insterted.
+
+### Remove
+
+```swift
+instanceCopy1.set.remove(sub1)
+```
+
+Only remove the saved object which has the same `zIndex`.
+
+```swift
+instanceCopy1.set.removeAll(where perform: (Element) -> Bool)
+```
+
+You can decide which object will be removed.
+
+### Fetch
+
+Everytime when you fetch the object, we will remove the item that has the same `zIndex`. But we can not promise it in the runtime.
+
 ## What is ZIndex
 
 ZIndex is `MagicalData`'s own primary key. It will automatically add to your table. We use this key to judge whether the two objects are equal, or whether the object is in the database.<br>
@@ -258,18 +289,14 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
 
 ## Compare With Realm
 
-We use Realm and MagicData create 1000 objects.
+### Create 1000 objects.
 
-### Realm
+* Realm
+    - Time: 2.3450679779052734s
+    - Memory: 38.1mb
+    - Code Line: 50
 
-* Time: 2.3450679779052734s
-* Memory: 38.1mb
-* Code Line: 50
-
-### MagicData
-
-* Time: 1.1123838424682617s
-* Memory: 32.5mb
-* Code Line: 48
-<br>
-**MagicData won**
+* MagicData
+    - Time: 1.1123838424682617s
+    - Memory: 32.5mb
+    - Code Line: 48
