@@ -258,6 +258,16 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
 
 ## Compare With Realm
 
+We use Realm and MagicData create 1000 objects.
+
 ### Realm
 
-create 100 Object: 2.3450679779052734, 38.1mb
+* Time: 2.3450679779052734s
+* Memory: 38.1mb
+* Code Line: 50
+
+### MagicData
+
+* Time: 1.1123838424682617s
+* Memory: 32.5mb
+* Code Line: 48
