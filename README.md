@@ -76,6 +76,10 @@ test2.name = "hello"
 print(test.name) // "hi"
 ```
 
+### Codable
+
+`MagicObject` comforms to the `Codable`, how ever, you can never decode a `MagicObject`. `MagicObject` will be encoded to a int value, which indicates the `zIndex` of the object.
+
 ## Magical
 
 **Magical**s are kinds of values that can be stored in the database.
