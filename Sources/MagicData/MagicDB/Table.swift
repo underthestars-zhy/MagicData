@@ -109,7 +109,9 @@ extension MagicData {
     }
 
     func getZIndex(of object: some MagicObject) -> Int? {
-        object.createMirror().createExpresses().first?.zIndex
+        object.createMirror().getAllHost().first { host in
+            host.zIndex != nil
+        }?.zIndex
     }
 
     func addZindex(_ object: some MagicObject, orginial: Int) throws {

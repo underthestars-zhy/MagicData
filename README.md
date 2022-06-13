@@ -170,27 +170,27 @@ try await magic.has(of: TestModel.self, primary: instance1.uuid)
 
 ```swift
 struct TestModel: MagicObject {
-@PrimaryMagicValue var uuid: UUID
+    @PrimaryMagicValue var uuid: UUID
 
-@MagicValue var sub: Sub
+    @MagicValue var sub: Sub
 
-init() {}
+    init() {}
 
-init(_ sub: Sub) {
-self.sub = sub
-}
+    init(_ sub: Sub) {
+        self.sub = sub
+    }
 }
 
 struct Sub: MagicObject {
-@PrimaryMagicValue var uuid: UUID
+    @PrimaryMagicValue var uuid: UUID
 
-@MagicValue var text: String
+    @MagicValue var text: String
 
-init() {}
+    init() {}
 
-init(_ text: String) {
-self.text = text
-}
+    init(_ text: String) {
+        self.text = text
+    }
 }
 ```
 
