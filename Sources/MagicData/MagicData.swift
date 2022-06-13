@@ -40,7 +40,7 @@ public class MagicData {
         try createTable(object)
         // TODO: try updateTable(object)
 
-        let table = Table(tableName(of: object))
+        let table = Table(Self.tableName(of: object))
 
         let zIndex: Int
 
@@ -59,7 +59,7 @@ public class MagicData {
 
                 try await db.run(query.update(createSetters(of: object)))
 
-                guard let _zIndex = getZIndex(of: object) else { throw MagicError.missValue }
+                guard let _zIndex = Self.getZIndex(of: object) else { throw MagicError.missValue }
                 zIndex = _zIndex
             } else {
                 zIndex = try getZIndexAndUpdate(object)
@@ -144,9 +144,9 @@ public class MagicData {
         try createTable(object)
         // TODO: try updateTable(object)
 
-        let table = Table(tableName(of: object))
+        let table = Table(Self.tableName(of: object))
 
-        guard let zIndex = getZIndex(of: object) else { throw MagicError.objectHasNotSaved }
+        guard let zIndex = Self.getZIndex(of: object) else { throw MagicError.objectHasNotSaved }
 
         let query = table.where(Expression<Int>("z_index") == zIndex)
 
@@ -157,7 +157,7 @@ public class MagicData {
         try createTable(type.init())
         // TODO: try updateTable(object)
 
-        let table = Table(tableName(of: type.init()))
+        let table = Table(Self.tableName(of: type.init()))
 
         try db.run(table.delete())
     }

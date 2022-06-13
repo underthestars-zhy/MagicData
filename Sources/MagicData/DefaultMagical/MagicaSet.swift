@@ -26,13 +26,13 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
 
     public func convert(magic: MagicData) async throws -> Data {
         let list = try await set.asyncMap { object in
-            try await object.convert(magic: magic)
+            try await object.0.convert(magic: magic)
         }
 
         return try JSONEncoder().encode(list)
     }
 
-    public var set: [Element]
+    public var set: [(Element, Int?)]
 
     public init(_ sequence: some Sequence<Element>) {
         self.set = []
@@ -46,28 +46,42 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
     }
 
     public mutating func insert(_ element: Element) {
-        if let zIndex = element.createMirror().getAllHost().first?.zIndex {
-            if !self.set.contains(where: { object in
-                object.createMirror().getAllHost().first?.zIndex == zIndex
-            }) {
-                self.set.append(element)
-            }
-        } else {
-            self.set.append(element)
-        }
+        self.remove(element)
+        self.set.append((element, MagicData.getZIndex(of: element)))
     }
 
     public mutating func remove(_ element: Element) {
         if let zIndex = element.createMirror().getAllHost().first?.zIndex {
             self.set.removeAll { object in
-                object.createMirror().getAllHost().first?.zIndex == zIndex
+                object.1 == zIndex
+            }
+        } else if element.hasPrimaryValue, let primary = element.createMirror().getPrimaryValue() {
+            self.set.removeAll { (object, _) in
+                if object.hasPrimaryValue {
+                    return object.createMirror().getPrimaryValue()?.equal(to: primary) ?? false
+                } else {
+                    return false
+                }
+            }
+        } else {
+            let dict = element.createMirror().getAllHostDictionary()
+            self.set.removeAll { (object, _) in
+                if MagicData.tableName(of: object) == MagicData.tableName(of: element) {
+                    let dictionary = object.createMirror().getAllHostDictionary()
+
+                    return dictionary.allSatisfy { (key: String, value: MagicalValueHost) in
+                        dict[key] === value
+                    }
+                } else {
+                    return false
+                }
             }
         }
     }
 
     public mutating func removeAll(where perform: (Element) -> Bool) {
         self.set.removeAll { object in
-            perform(object)
+            perform(object.0)
         }
     }
 
@@ -75,7 +89,7 @@ public struct MagicalSet<Element>: Magical, MagicDataConvert where Element: Magi
         let _set = self.set
         self.set = []
         for item in _set {
-            self.insert(item)
+            self.insert(item.0)
         }
     }
 }
@@ -93,6 +107,12 @@ extension MagicalSet: ExpressibleByArrayLiteral {
 
 extension MagicalSet: Sequence {
     public func makeIterator() -> IndexingIterator<[Element]> {
-        return self.set.makeIterator()
+        return self.set.map(\.0).makeIterator()
+    }
+}
+
+public extension MagicalSet {
+    var count: Int {
+        return self.set.count
     }
 }

@@ -60,7 +60,6 @@ public protocol Reversable {
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
-    internal let hashID = UUID()
 
     public var projectedValue: Reversable {
         get {
@@ -105,7 +104,6 @@ public protocol Reversable {
     internal let hostValue: MagicalValueHost
     internal let primary: Bool = false
     internal let type: MagicalType
-    internal let hashID = UUID()
 
     public init() {
         hostValue = .init(value: nil, type: Value.self)
@@ -134,8 +132,6 @@ public protocol _ReverseMagicValue {
     internal let reverse: KeyPath<Object, Reversable>
     internal let hostValue = MagicalIDHost()
     internal let type: any MagicObject.Type
-    internal let hashID = UUID()
-
 
     public init(_ reverse: KeyPath<Object, Reversable>) {
         self.reverse = reverse

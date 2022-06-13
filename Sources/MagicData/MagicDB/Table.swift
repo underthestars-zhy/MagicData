@@ -38,10 +38,10 @@ extension MagicData {
     }
 
     func createTable(_ object: some MagicObject) throws {
-        if try tableExit(tableName(of: object)) { return }
+        if try tableExit(Self.tableName(of: object)) { return }
         let mirror = object.createMirror()
         let expressions = mirror.createExpresses()
-        let table = Table(tableName(of: object))
+        let table = Table(Self.tableName(of: object))
 
         try db.run(table.create(ifNotExists: true) { t in
             for expression in expressions {
@@ -83,7 +83,7 @@ extension MagicData {
         try addToTableInfo(object)
     }
 
-    func tableName(of object: some MagicObject) -> String {
+    nonisolated static func tableName(of object: some MagicObject) -> String {
         return "\(type(of: object))"
     }
 
@@ -93,13 +93,13 @@ extension MagicData {
         let version = Expression<Int>("version")
         let zIndexCount = Expression<Int>("z_index_count")
 
-        try db.run(info.insert(tableName <- self.tableName(of: object), version <- 0, zIndexCount <- 0))
+        try db.run(info.insert(tableName <- Self.tableName(of: object), version <- 0, zIndexCount <- 0))
     }
 
     func getZIndexOfObject(_ object: some MagicObject) throws -> Int {
         let zindex = Expression<Int>("z_index_count")
         let tableName = Expression<String>("table_name")
-        let name = self.tableName(of: object)
+        let name = Self.tableName(of: object)
 
         let query = Table("0Table_Info").select(zindex).where(tableName == name)
 
@@ -108,7 +108,7 @@ extension MagicData {
         return res[zindex]
     }
 
-    func getZIndex(of object: some MagicObject) -> Int? {
+    nonisolated static func getZIndex(of object: some MagicObject) -> Int? {
         object.createMirror().getAllHost().first { host in
             host.zIndex != nil
         }?.zIndex
@@ -117,7 +117,7 @@ extension MagicData {
     func addZindex(_ object: some MagicObject, orginial: Int) throws {
         let zindex = Expression<Int>("z_index_count")
         let tableName = Expression<String>("table_name")
-        let name = self.tableName(of: object)
+        let name = Self.tableName(of: object)
 
         let update = Table("0Table_Info").where(tableName == name).update(zindex <- orginial + 1)
 
@@ -132,14 +132,14 @@ extension MagicData {
     }
 
     func getObject<Object: MagicObject>(by zIndex: Int) async throws -> Object? {
-        let table = Table(tableName(of: Object()))
+        let table = Table(Self.tableName(of: Object()))
 
         guard let row = try db.pluck(table.where(Expression<Int>("z_index") == zIndex)) else { return nil }
 
         return try await createModel(by: row)
     }
 
-    func createQueryTable(_ primaryExpress: MagicExpress, primary: MagicalPrimaryValue, table: Table) async throws -> Table {
+    func createQueryTable(_ primaryExpress: MagicExpress, primary: any MagicalPrimaryValue, table: Table) async throws -> Table {
         let query: Table
 
         switch primaryExpress.type {

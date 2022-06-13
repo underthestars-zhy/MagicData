@@ -65,6 +65,19 @@ extension Mirror {
         }
     }
 
+    func getAllHostDictionary() -> [String : MagicalValueHost] {
+        var res = [String : MagicalValueHost]()
+        self.children.forEach { child in
+            let mirror = Mirror(reflecting: child.value)
+
+            if let label = child.label {
+                res[label] = mirror.getHost()
+            }
+        }
+
+        return res
+    }
+
     func getAllReverse() -> [_ReverseMagicValue] {
         return self.children.compactMap { (label: String?, value: Any) in
             value as? _ReverseMagicValue
@@ -81,5 +94,20 @@ extension Mirror {
         return self.children.first { (label: String?, value: Any) in
             label == "hostValue"
         }?.value as? MagicalIDHost
+    }
+
+    func getPrimaryValue() -> (any MagicalPrimaryValue)? {
+        guard let primary = self.children.first(where: { child in
+            let mirror = Mirror(reflecting: child.value)
+            return "\(mirror.subjectType)".hasPrefix("PrimaryMagicValue")
+        })?.value else { return nil }
+
+        let mirror = Mirror(reflecting: primary)
+
+        return (mirror.children.first { (label: String?, value: Any) in
+            label == "hostValue"
+        }?.value as? MagicalValueHost)?.value.flatMap({ value in
+            value as? MagicalPrimaryValue
+        })
     }
 }

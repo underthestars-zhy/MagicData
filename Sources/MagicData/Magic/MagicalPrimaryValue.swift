@@ -7,8 +7,18 @@
 
 import Foundation
 
-public protocol MagicalPrimaryValue {
+public protocol MagicalPrimaryValue: Equatable {
     static var deafultPrimaryValue: Self { get }
 }
 
 public typealias CombineMagicalPrimaryValueWithMagical = Magical & MagicalPrimaryValue
+
+extension MagicalPrimaryValue {
+    func equal(to value: any MagicalPrimaryValue) -> Bool {
+        if let value = value as? Self {
+            return value == self
+        } else {
+            return false
+        }
+    }
+}

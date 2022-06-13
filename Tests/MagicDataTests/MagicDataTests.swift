@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 @testable import MagicData
 
 final class MagicDataTests: XCTestCase {
@@ -449,5 +450,44 @@ final class MagicDataTests: XCTestCase {
         let count2 = try await magic.object(of: TestModel.self).count
 
         XCTAssertEqual(count2, 0)
+    }
+
+    func test15() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var set: MagicalSet<Sub>
+
+            init() {
+                set = .init([])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let instance = TestModel()
+
+        let sub1 = Sub("hi")
+        let sub2 = sub1
+
+        instance.set.insert(sub1)
+
+        instance.set.insert(sub2)
+
+        XCTAssertEqual(instance.set.count, 1)
+
+        sub2.text = "wwdc"
+
+        instance.set.insert(sub2)
+
+        XCTAssertEqual(instance.set.map(\.text), ["wwdc"])
     }
 }
