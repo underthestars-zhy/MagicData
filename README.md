@@ -90,6 +90,7 @@ Now we support theses:
 * `UUID` will be stored as `Text` in the database.
 * `Int` will be stored as `Int` in the database.
 * `Double` will be stored as `Real` in the database.
+* `Float` will be stored as `Real` in the database.
 * `Data` will be stored as `Blob` in the database.
 * `Codable` will be stored as `Blob` in the database.
 * `Arrary` will be stored as `Blob` in the database.
