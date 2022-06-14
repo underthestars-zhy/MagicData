@@ -42,7 +42,7 @@ public protocol Reversable {
 
 @propertyWrapper public struct MagicValue<Value: Magical>: Reversable {
     public func isSet() -> Bool {
-        return "\(Value.self)".hasPrefix("MagicalSet")
+        return Value.self is MagicalSequence.Type
     }
 
     public var reversableID: UUID = .init()
@@ -80,7 +80,7 @@ public protocol Reversable {
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable {
     public func isSet() -> Bool {
-        return "\(Value.self)".hasPrefix("MagicalSet")
+        return Value.self is MagicalSequence.Type
     }
 
     public var reversableID: UUID = .init()

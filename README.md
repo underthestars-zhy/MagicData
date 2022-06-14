@@ -78,7 +78,7 @@ print(test.name) // "hi"
 
 ### Codable
 
-`MagicObject` comforms to the `Codable`, how ever, you can never decode a `MagicObject`. `MagicObject` will be encoded to a int value, which indicates the `zIndex` of the object.
+`MagicObject` conforms to the `Codable`, how ever, you can never decode a `MagicObject`. `MagicObject` will be encoded to a int value, which indicates the `zIndex` of the object.
 
 ## Magical
 
@@ -203,6 +203,8 @@ You could use `@OptionMagicValue` as well. This kind of relation is a little dif
 
 ### Many to Many
 
+#### Set
+
 ```swift
 struct TestModel: MagicObject {
     @PrimaryMagicValue var uuid: UUID
@@ -226,6 +228,30 @@ struct Sub: MagicObject {
 ```
 
 `MagicalSet` just like a default set, but it only can store `MagicObject`.
+
+#### Arrary
+
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var arrary: [Sub]
+
+    init() {
+        arrary = .init([])
+    }
+}
+
+struct Sub: MagicObject {
+    @MagicValue var text: String
+
+    init() {}
+
+    init(_ text: String) {
+        self.text = text
+    }
+}
+```
 
 ### Reverse
 

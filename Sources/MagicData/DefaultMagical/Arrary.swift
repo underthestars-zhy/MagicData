@@ -9,10 +9,21 @@ import Foundation
 
 extension Array: Magical, MagicDataConvert where Element: Codable {
     public static func create(_ value: Data?, magic: MagicData) async throws -> Self? {
-        if let value = value {
-            return try? JSONDecoder().decode(Self.self, from: value)
+        if let Magic = Element.self as? MagicObject.Type {
+            if let value = value {
+                let zIndexs = try JSONDecoder().decode([Int].self, from: value)
+                return try await zIndexs.asyncCompactMap { int in
+                    try await Magic.create(int, magic: magic) as? Element
+                }
+            } else {
+                return nil
+            }
         } else {
-            return nil
+            if let value = value {
+                return try JSONDecoder().decode(Self.self, from: value)
+            } else {
+                return nil
+            }
         }
     }
 
@@ -21,11 +32,15 @@ extension Array: Magical, MagicDataConvert where Element: Codable {
     }
 
     public func convert(magic: MagicData) async throws -> Data {
-        if Element.self is any Magical {
-            throw MagicError.magicalCannotInArraryOrDictionary
+        if Element.self as? MagicObject.Type != nil {
+            let list = try await self.asyncCompactMap { object in
+                try await (object as? any MagicObject)?.convert(magic: magic)
+            }
+
+            return try JSONEncoder().encode(list)
+        } else {
+            return try JSONEncoder().encode(self)
         }
-        
-        return try JSONEncoder().encode(self)
     }
 }
 

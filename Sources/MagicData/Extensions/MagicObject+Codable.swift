@@ -18,6 +18,6 @@ public extension MagicObject {
     }
 
     init(from decoder: Decoder) throws {
-        fatalError()
+        fatalError("You should never decode the MagicObject")
     }
 }

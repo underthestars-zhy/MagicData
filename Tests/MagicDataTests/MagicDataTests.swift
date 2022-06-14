@@ -490,4 +490,53 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(instance.set.map(\.text), ["wwdc"])
     }
+
+    func test16() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var arrary: [Sub]
+
+            init() {
+                arrary = .init([])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$arrary) var father: AsyncReverseMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let instance = TestModel()
+
+        let sub1 = Sub("hi")
+        let sub2 = Sub("wwdc")
+
+        instance.arrary.append(sub1)
+        instance.arrary.append(sub2)
+
+        let magic = try await MagicData(type: .temporary)
+
+        try await magic.update(instance)
+
+        let instance1 = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        XCTAssertEqual(instance1.arrary.count, 2)
+        XCTAssertEqual(instance1.arrary.map(\.text), ["hi", "wwdc"])
+
+        let subs = try await magic.object(of: Sub.self)
+        let count = subs.count
+
+        XCTAssertEqual(count, 2)
+
+        let fatherCount = subs.first?.father.count
+
+        XCTAssertEqual(fatherCount, 1)
+    }
 }
