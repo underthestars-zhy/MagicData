@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Reversable {
-    func isSet() -> Bool
+    func isSequence() -> Bool
     var reversableID: UUID { get }
 }
 
@@ -41,7 +41,7 @@ public protocol Reversable {
 }
 
 @propertyWrapper public struct MagicValue<Value: Magical>: Reversable {
-    public func isSet() -> Bool {
+    public func isSequence() -> Bool {
         return Value.self is MagicalSequence.Type
     }
 
@@ -79,7 +79,7 @@ public protocol Reversable {
 }
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable {
-    public func isSet() -> Bool {
+    public func isSequence() -> Bool {
         return Value.self is MagicalSequence.Type
     }
 

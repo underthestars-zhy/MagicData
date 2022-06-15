@@ -5,6 +5,8 @@ import CollectionConcurrencyKit
 @MagicActor
 public class MagicData {
     let db: Connection
+    let filePath: URL
+    let tempory: Bool
 
     public enum CreateType {
         case memory
@@ -19,6 +21,9 @@ public class MagicData {
             self.db = try Connection(.temporary)
         }
 
+        self.filePath = try Self.createPath(nil)
+        self.tempory = true
+
         try createTableInfoTableIfNotExist()
     }
 
@@ -32,7 +37,45 @@ public class MagicData {
 
     public init(path: URL) throws {
         self.db = try Connection(path.appendingPathComponent("default.sqlite3").path)
+
+        self.filePath = try Self.createPath(path)
+        self.tempory = false
+
         try createTableInfoTableIfNotExist()
+    }
+
+    deinit {
+        if tempory {
+            try? FileManager.default.removeItem(at: filePath)
+        }
+    }
+
+    static func createPath(_ path: URL?) throws -> URL {
+        if let path {
+            let url = path.universalAppending(path: "files")
+            
+            if !FileManager.default.fileExists(atPath: url.universalPath()) {
+                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            }
+
+            return url
+        } else {
+            #if os(macOS)
+            guard let url = FileManager.default.urls(for: .downloadsDirectory, in: .allDomainsMask).first?.universalAppending(path: "files") else {
+                throw MagicError.cannotCreateFile
+            }
+            #else
+            guard let url = FileManager.default.urls(for: .documentDirectory, in: .allDomainsMask).first?.universalAppending(path: "files") else {
+                throw MagicError.cannotCreateFile
+            }
+            #endif
+
+            if !FileManager.default.fileExists(atPath: url.universalPath()) {
+                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+            }
+
+            return url
+        }
     }
 
     @discardableResult

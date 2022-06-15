@@ -85,8 +85,7 @@ extension MagicData {
 
             for row in rows {
                 let _zIndex = row[Expression<Int>("z_index")]
-                print(reversable.isSet())
-                if reversable.isSet() {
+                if reversable.isSequence() {
                     guard let data = row[Expression<Data?>(name)] else { continue }
                     if try JSONDecoder().decode([Int].self, from: data).contains(zIndex) {
                         ids.append(_zIndex)

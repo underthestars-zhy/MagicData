@@ -18,4 +18,5 @@ public enum MagicError: Error {
     case magicalCannotInArraryOrDictionary
     case missObject
     case objectHasNotSaved
+    case missData
 }
