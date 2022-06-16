@@ -340,6 +340,6 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
     - Code Line: 50
 
 * MagicData
-    - Time: 1.1123838424682617s
-    - Memory: 32.5mb
+    - Time: 11.498681783676147s
+    - Memory: 32.4mb
     - Code Line: 48
