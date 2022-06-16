@@ -23,4 +23,12 @@ extension URL {
             return self.appendingPathComponent(path)
         }
     }
+
+    init(universalFilePath filePath: String) {
+        if #available(macOS 13.0, iOS 16, *) {
+            self.init(filePath: filePath)
+        } else {
+            self.init(fileURLWithPath: filePath)
+        }
+    }
 }

@@ -331,3 +331,15 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
     - Time: 1.1123838424682617s
     - Memory: 32.5mb
     - Code Line: 48
+
+### Create 10000 objects.
+
+* Realm
+    - Time: 30.317097187042236s
+    - Memory: 41.4mb
+    - Code Line: 50
+
+* MagicData
+    - Time: 1.1123838424682617s
+    - Memory: 32.5mb
+    - Code Line: 48
