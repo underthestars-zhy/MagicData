@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Dictionary: Magical, MagicDataConvert where Key: Codable, Value: Codable & Equatable {
+extension Dictionary: Magical, MagicDataConvert where Key: Codable, Value: Codable {
     public static func create(_ value: Data?, magic: MagicData) async throws -> Self? {
         if let value = value {
             return try? JSONDecoder().decode(Self.self, from: value)
@@ -28,4 +28,3 @@ extension Dictionary: Magical, MagicDataConvert where Key: Codable, Value: Codab
         return try JSONEncoder().encode(self)
     }
 }
-
