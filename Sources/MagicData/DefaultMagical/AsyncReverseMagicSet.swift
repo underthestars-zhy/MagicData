@@ -1,5 +1,5 @@
 //
-//  AsyncMagicSet.swift
+//  AsyncReverseMagicSet.swift
 //  
 //
 //  Created by 朱浩宇 on 2022/6/11.
@@ -25,6 +25,14 @@ public struct AsyncReverseMagicSet<Element>: _AsyncMagicalSet where Element: Mag
         self.ids = []
         self.magic = nil
     }
+}
+
+extension AsyncReverseMagicSet: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Element...) {
+        self.init()
+    }
+
+    public typealias ArrayLiteralElement = Element
 }
 
 public extension AsyncReverseMagicSet {

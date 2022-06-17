@@ -598,4 +598,102 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(value.value, "Hello")
     }
+
+    func test19() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var asset: AsyncMagical<Sub>
+
+            init() {}
+
+            init(_ object: Sub) {
+                asset = .init(value: object)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$asset) var father: AsyncReverseMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel(Sub("hello"))
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let sub = try await instanceCopy.asset.get()
+
+        XCTAssertEqual(sub.text, "hello")
+
+        let subs = try await magic.object(of: Sub.self)
+
+        XCTAssertEqual(subs.count, 1)
+
+        let fathers = subs.first?.father
+
+        XCTAssertEqual(fathers?.count, 1)
+
+        for try await test in fathers ?? [] {
+            XCTAssertEqual(test.uuid, instance.uuid)
+        }
+    }
+
+    func test20() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var asset: AsyncMagical<[Sub]>
+
+            init() {}
+
+            init(_ object: Sub) {
+                asset = .init(value: [object])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$asset) var father: AsyncReverseMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel(Sub("hello"))
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let sub = try await instanceCopy.asset.get()
+
+        XCTAssertEqual(sub.first?.text, "hello")
+
+        let subs = try await magic.object(of: Sub.self)
+
+        XCTAssertEqual(subs.count, 1)
+
+        let fathers = subs.first?.father
+
+        XCTAssertEqual(fathers?.count, 1)
+
+        for try await test in fathers ?? [] {
+            XCTAssertEqual(test.uuid, instance.uuid)
+        }
+    }
 }

@@ -11,3 +11,4 @@ protocol MagicalSequence {}
 
 extension MagicalSet: MagicalSequence {}
 extension Array: MagicalSequence where Element: MagicObject {}
+extension AsyncMagical: MagicalSequence where Element: MagicalSequence {}

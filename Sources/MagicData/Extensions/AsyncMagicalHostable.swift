@@ -10,3 +10,5 @@ import Foundation
 public protocol AsyncMagicalHostable {}
 
 extension MagicAsset: AsyncMagicalHostable {}
+extension Array: AsyncMagicalHostable where Element: MagicObject {}
+extension MagicalSet: MagicObject {}

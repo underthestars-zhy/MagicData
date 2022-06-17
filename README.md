@@ -11,7 +11,7 @@ A replacement of SQlite, CoreData or Realm. It is very easy to use and is a ligh
 
 ### MagicData
 
-We use **MagicData** manage all the magic objects, which means **MagicData** can add, update or delete the objects. All the **MagicData**s are in the some actor thread. In this way, we keep the thread-safe.
+We use **MagicData** manage all the magic objects, which means **MagicData** can add, update or delete the objects. All the **MagicData**s are in the same actor thread. In this way, we keep the thread-safe.
 
 Here are two ways to create **MagicData**.
 ```swift
@@ -144,6 +144,8 @@ struct TestModel: MagicObject {
 * Array where Element: Codable
 * Set where Element: Codable
 * Dictionay where Key: Codable, Value: Codable
+
+## AsyncMagical
 
 ## Add/Update
 

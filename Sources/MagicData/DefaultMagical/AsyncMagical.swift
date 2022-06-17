@@ -92,3 +92,63 @@ extension AsyncMagical: MagicDataConvert where Element: MagicDataConvert {
         }
     }
 }
+
+extension AsyncMagical: MagicIntConvert where Element: MagicIntConvert {
+    public static func create(_ value: Int?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+        if let value {
+            return self.init(host: value, magic: magic)
+        } else {
+            return nil
+        }
+    }
+
+    public func convert(magic: MagicData) async throws -> Int {
+        if let _value {
+            return try await _value.convert(magic: magic)
+        } else if let host = host as? Int {
+            return host
+        } else {
+            throw MagicError.missValue
+        }
+    }
+
+    public func get() async throws -> Element {
+        if let _value {
+            return _value
+        } else if let host = host as? Int, let magic, let value = try await Element.create(host, magic: magic) {
+            return value
+        } else {
+            throw MagicError.missValue
+        }
+    }
+}
+
+extension AsyncMagical: MagicDoubleConvert where Element: MagicDoubleConvert {
+    public static func create(_ value: Double?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+        if let value {
+            return self.init(host: value, magic: magic)
+        } else {
+            return nil
+        }
+    }
+
+    public func convert(magic: MagicData) async throws -> Double {
+        if let _value {
+            return try await _value.convert(magic: magic)
+        } else if let host = host as? Double {
+            return host
+        } else {
+            throw MagicError.missValue
+        }
+    }
+
+    public func get() async throws -> Element {
+        if let _value {
+            return _value
+        } else if let host = host as? Double, let magic, let value = try await Element.create(host, magic: magic) {
+            return value
+        } else {
+            throw MagicError.missValue
+        }
+    }
+}
