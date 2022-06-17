@@ -11,4 +11,4 @@ public protocol AsyncMagicalHostable {}
 
 extension MagicAsset: AsyncMagicalHostable {}
 extension Array: AsyncMagicalHostable where Element: MagicObject {}
-extension MagicalSet: MagicObject {}
+extension MagicalSet: AsyncMagicalHostable {}

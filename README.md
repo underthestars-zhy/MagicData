@@ -147,6 +147,34 @@ struct TestModel: MagicObject {
 
 ## AsyncMagical
 
+`AsyncMagical` allows you don't get the value during the query, so you can get it later. It is very helpful when you save `MagicObject` or `MagicAsset`. Because it can delay the time you get the object, and speed up the time of querying.
+
+### Support List
+
+* MagicAsset
+* Array where Element: MagicObject
+* MagicalSet
+* MagicObject
+
+### How to use
+
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var asset: AsyncMagical<MagicAsset<String>>
+
+    init() {}
+
+    init(_ object: Sub) {
+        asset = .init(value: object)
+    }
+}
+```
+
+* Get Value: `try await instanceCopy.asset.get()`
+* Set Value: `instance.asset.set(.init(value: "Hello"))`
+
 ## Add/Update
 
 ```swift

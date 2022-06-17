@@ -52,10 +52,11 @@ extension AsyncMagical: MagicStringConvert where Element: MagicStringConvert {
         }
     }
 
-    public func get() async throws -> Element {
+    public mutating func get() async throws -> Element {
         if let _value {
             return _value
         } else if let host = host as? String, let magic, let value = try await Element.create(host, magic: magic) {
+            self._value = value
             return value
         } else {
             throw MagicError.missValue
