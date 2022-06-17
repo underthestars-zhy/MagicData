@@ -10,11 +10,6 @@ import Foundation
 public protocol MagicAssetConvert {
     init?(_ data: Data)
     func convert() throws -> Data?
-    var filePathExtension: String { get }
-}
-
-public extension MagicAssetConvert {
-    var filePathExtension: String { "" }
 }
 
 extension String: MagicAssetConvert {
@@ -25,8 +20,66 @@ extension String: MagicAssetConvert {
     public func convert() throws -> Data? {
         self.data(using: .utf8)
     }
+}
 
-    public var filePathExtension: String {
-        "txt"
+extension Data: MagicAssetConvert {
+    public func convert() throws -> Data? {
+        self
+    }
+}
+
+extension MagicalCodable {
+    public init?(_ data: Data) {
+        if let decode = (try? JSONDecoder().decode(Self.self, from: data)) {
+            self = decode
+        } else {
+            return nil
+        }
+    }
+
+    public func convert() throws -> Data? {
+        try? JSONEncoder().encode(self)
+    }
+}
+
+extension Array: MagicAssetConvert where Element: Codable {
+    public init?(_ data: Data) {
+        if let decode = (try? JSONDecoder().decode(Self.self, from: data)) {
+            self = decode
+        } else {
+            return nil
+        }
+    }
+
+    public func convert() throws -> Data? {
+        try? JSONEncoder().encode(self)
+    }
+}
+
+extension Set: MagicAssetConvert where Element: Codable {
+    public init?(_ data: Data) {
+        if let decode = (try? JSONDecoder().decode(Self.self, from: data)) {
+            self = decode
+        } else {
+            return nil
+        }
+    }
+
+    public func convert() throws -> Data? {
+        try? JSONEncoder().encode(self)
+    }
+}
+
+extension Dictionary: MagicAssetConvert where Key: Codable, Value: Codable {
+    public init?(_ data: Data) {
+        if let decode = (try? JSONDecoder().decode(Self.self, from: data)) {
+            self = decode
+        } else {
+            return nil
+        }
+    }
+
+    public func convert() throws -> Data? {
+        try? JSONEncoder().encode(self)
     }
 }

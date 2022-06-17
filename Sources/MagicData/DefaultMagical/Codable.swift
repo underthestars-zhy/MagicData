@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol MagicalCodable: Magical, MagicDataConvert where Self: Codable {
+public protocol MagicalCodable: Magical, MagicDataConvert, MagicAssetConvert where Self: Codable {
 
 }
 

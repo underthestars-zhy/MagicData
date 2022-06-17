@@ -539,4 +539,37 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(fatherCount, 1)
     }
+
+    func test17() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var asset: MagicAsset<String>
+
+            init() {
+                asset = .init()
+            }
+        }
+
+        let instance = TestModel()
+
+        let magic = try await MagicData(type: .temporary)
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        XCTAssertEqual(instance.asset.path, instanceCopy.asset.path)
+
+        instanceCopy.asset.value = "hello"
+
+        try await magic.update(instanceCopy)
+
+        let instanceCopy2 = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        XCTAssertEqual(instance.asset.path, instanceCopy2.asset.path)
+        XCTAssertEqual(instanceCopy2.asset.path, instanceCopy.asset.path)
+
+        XCTAssertEqual(instanceCopy2.asset.value, "hello")
+    }
 }

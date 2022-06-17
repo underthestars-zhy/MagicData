@@ -122,6 +122,17 @@ Some value can be used in the `@PrimaryMagicValue`:
 - **UUID** has a default **UUID** value.
 - **Int** has auto increase ability.
 
+## MagicAsset
+
+`MagicAsset` conforms to `Magical` too. But it only store a path in the database. It is used to save large files, the files will be saved in the local file system instead of database. The `MagicAsset`'s element need to conform the `MagicAssetConvert`. Here are the list:
+
+* String
+* Data
+* MagicalCodable
+* Array where Element: Codable
+* Set where Element: Codable
+* Dictionay where Key: Codable, Value: Codable
+
 ## Add/Update
 
 ```swift
