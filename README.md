@@ -124,6 +124,18 @@ Some value can be used in the `@PrimaryMagicValue`:
 
 ## MagicAsset
 
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var asset: MagicAsset<String>
+
+    init() {
+        asset = .init()
+    }
+}
+```
+
 `MagicAsset` conforms to `Magical` too. But it only store a path in the database. It is used to save large files, the files will be saved in the local file system instead of database. The `MagicAsset`'s element need to conform the `MagicAssetConvert`. Here are the list:
 
 * String
