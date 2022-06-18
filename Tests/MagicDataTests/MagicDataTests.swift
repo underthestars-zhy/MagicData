@@ -745,4 +745,104 @@ final class MagicDataTests: XCTestCase {
             XCTAssertEqual(test.uuid, instance.uuid)
         }
     }
+
+    func test22() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var dict: [String : Sub]
+
+            init() {
+                dict = [:]
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$dict) var father: AsyncReverseMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel()
+
+        instance.dict["hi"] = Sub("wwdc")
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        XCTAssertEqual(instanceCopy.dict.map({ (key: String, value: Sub) in
+            return key + value.text
+        }), ["hiwwdc"])
+
+        let sub = try await magic.object(of: Sub.self).first
+
+        XCTAssertEqual(sub?.father.count, 1)
+        var uuids = [UUID]()
+
+        for try await item in sub?.father ?? [] {
+            uuids.append(item.uuid)
+        }
+
+        XCTAssertEqual(uuids, [instance.uuid])
+    }
+
+    func test23() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            @MagicValue var dict: AsyncMagical<[String : Sub]>
+
+            init() {
+                dict = .init(value: [:])
+            }
+        }
+
+        struct Sub: MagicObject {
+            @MagicValue var text: String
+            @ReverseMagicValue(\TestModel.$dict) var father: AsyncReverseMagicSet<TestModel>
+
+            init() {}
+
+            init(_ text: String) {
+                self.text = text
+            }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel()
+
+        var dict = try await instance.dict.get()
+        dict["hi"] = Sub("wwdc")
+        instance.dict.set(dict)
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let arrary = try await instanceCopy.dict.get().map({ (key: String, value: Sub) in
+            return key + value.text
+        })
+
+        XCTAssertEqual(arrary, ["hiwwdc"])
+
+        let sub = try await magic.object(of: Sub.self).first
+
+        XCTAssertEqual(sub?.father.count, 1)
+        var uuids = [UUID]()
+
+        for try await item in sub?.father ?? [] {
+            uuids.append(item.uuid)
+        }
+
+        XCTAssertEqual(uuids, [instance.uuid])
+    }
 }

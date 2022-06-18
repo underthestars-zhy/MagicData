@@ -7,11 +7,6 @@
 
 import Foundation
 
-public protocol Reversable {
-    func isSequence() -> Bool
-    var reversableID: UUID { get }
-}
-
 @propertyWrapper public struct PrimaryMagicValue<Value: Magical> where Value: MagicalPrimaryValue {
     public var wrappedValue: Value {
         get {
@@ -41,6 +36,14 @@ public protocol Reversable {
 }
 
 @propertyWrapper public struct MagicValue<Value: Magical>: Reversable {
+    public func allID(_ data: Data) throws -> [Int] {
+        if let Sequence = Value.self as? MagicalSequence.Type {
+            return try Sequence.allID(data)
+        } else {
+            return []
+        }
+    }
+
     public func isSequence() -> Bool {
         return Value.self is MagicalSequence.Type
     }
@@ -79,6 +82,14 @@ public protocol Reversable {
 }
 
 @propertyWrapper public struct OptionMagicValue<Value: Magical>: Reversable {
+    public func allID(_ data: Data) throws -> [Int] {
+        if let Sequence = Value.self as? MagicalSequence.Type {
+            return try Sequence.allID(data)
+        } else {
+            return []
+        }
+    }
+    
     public func isSequence() -> Bool {
         return Value.self is MagicalSequence.Type
     }

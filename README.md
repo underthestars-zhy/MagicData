@@ -155,6 +155,7 @@ struct TestModel: MagicObject {
 * Array where Element: MagicObject
 * MagicalSet
 * MagicObject
+* Dictionay where Key: Codable, Value: MagicObject
 
 ### How to use
 
@@ -285,6 +286,8 @@ struct Sub: MagicObject {
 
 #### Arrary
 
+**ONLY Support single Arrary, which means it doesn't support something like `[[MagicObject]]`**
+
 ```swift
 struct TestModel: MagicObject {
     @PrimaryMagicValue var uuid: UUID
@@ -293,6 +296,32 @@ struct TestModel: MagicObject {
 
     init() {
         arrary = .init([])
+    }
+}
+
+struct Sub: MagicObject {
+    @MagicValue var text: String
+
+    init() {}
+
+    init(_ text: String) {
+        self.text = text
+    }
+}
+```
+
+#### Dictionary
+
+**ONLY Support single Dictionay, which means it doesn't support something like `[Int: [String: MagicObject]]`**
+
+```swift
+struct TestModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var dict: [String: Sub]
+
+    init() {
+        dict = [:]
     }
 }
 
