@@ -425,3 +425,15 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
     - Time: 11.498681783676147s
     - Memory: 32.4mb
     - Code Line: 48
+
+### Remove 11000 objects
+
+* Realm
+    - Time: 0.05919814109802246s
+    - Memory: 39mb
+    - Code Line: 48
+
+* MagicData
+    - Time: 0.018190860748291016s
+    - Memory: 32.1mb
+    - Code Line: 46
