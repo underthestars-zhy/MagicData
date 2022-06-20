@@ -204,6 +204,17 @@ public class MagicData {
 
         try db.run(table.delete())
     }
+
+    public func check(of type: any MagicObject.Type) throws -> Bool {
+        let object = type.init()
+        try createTable(object)
+
+        guard let row = try getTableInfo(of: type) else {
+            throw MagicError.cannotGetTableInfo
+        }
+
+        return try check(object, row: row)
+    }
 }
 
 

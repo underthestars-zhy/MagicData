@@ -437,3 +437,90 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
     - Time: 0.018190860748291016s
     - Memory: 32.1mb
     - Code Line: 46
+
+
+### Code Example:
+
+```swift
+import SwiftUI
+import MagicData
+
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Hello, world!")
+        }
+        .task {
+            let start = Date()
+            let magic = try! await MagicData()
+            try! await magic.removeAll(of: FileModel.self)
+            let end = Date()
+            print(end.timeIntervalSince1970 - start.timeIntervalSince1970)
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+struct FileModel: MagicObject {
+    @PrimaryMagicValue var uuid: UUID
+
+    @MagicValue var name: String
+
+    init() {}
+
+    init(name: String) {
+        self.name = name
+    }
+}
+```
+
+```swift
+import SwiftUI
+import RealmSwift
+
+struct ContentView: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Text("Hello, world!")
+        }
+        .task {
+            let start = Date()
+            let realm = try! await Realm()
+            try! realm.write({
+                realm.deleteAll()
+            })
+            let end = Date()
+            print(end.timeIntervalSince1970 - start.timeIntervalSince1970)
+        }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+class FileModel: Object {
+    @Persisted(primaryKey: true) var id: UUID
+
+    @Persisted var name: String
+
+    convenience init(name: String) {
+        self.init()
+        id = UUID()
+        self.name = name
+    }
+}
+```

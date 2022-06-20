@@ -25,4 +25,8 @@ public struct Migrations {
     public init(@MigrationStepResultBuilder _ steps: () -> [MigrationStep]) {
         self.steps = steps()
     }
+
+    func needUpdate(_ version: Int) -> Bool {
+        steps.count - 1 == version
+    }
 }

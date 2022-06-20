@@ -19,4 +19,5 @@ public enum MagicError: Error {
     case missObject
     case objectHasNotSaved
     case missData
+    case cannotGetTableInfo
 }

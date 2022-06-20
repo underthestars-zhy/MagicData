@@ -845,4 +845,8 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(uuids, [instance.uuid])
     }
+
+    func test24() async throws {
+        
+    }
 }

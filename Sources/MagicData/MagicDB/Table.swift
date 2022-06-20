@@ -27,6 +27,12 @@ extension MagicData {
         })
     }
 
+    func getTableInfo(of type: any MagicObject.Type) throws -> Row? {
+        let info = Table("0Table_Info")
+
+        return try db.pluck(info.where(Expression<String>("table_name") == Self.tableName(of: type.init())))
+    }
+
     func getAllTable() throws -> [String] {
         let info = Table("0Table_Info")
 
