@@ -847,6 +847,16 @@ final class MagicDataTests: XCTestCase {
     }
 
     func test24() async throws {
-        
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {}
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let res = try await magic.check(of: TestModel.self)
+
+        XCTAssertFalse(res)
     }
 }

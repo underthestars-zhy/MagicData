@@ -402,6 +402,11 @@ You cannot get the ZIndex through the `MagicalData`, but maybe we will make it p
 
 ## Compare With Realm
 
+* Realm Version: 10.28.0 (with some samll changes)
+* Platform: iOS16
+* Swift Version: 5.7
+* Device: iPhone13 Pro
+
 ### Create 1000 objects.
 
 * Realm
