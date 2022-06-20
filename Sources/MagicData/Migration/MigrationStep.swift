@@ -8,5 +8,9 @@
 import Foundation
 
 public struct MigrationStep {
-    
+    let changes: [Changes]
+
+    public init(changes: () -> [Changes]) {
+        self.changes = changes()
+    }
 }
