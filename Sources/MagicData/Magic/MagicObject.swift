@@ -12,6 +12,8 @@ public protocol MagicObject: Magical, MagicIntConvert, Codable, AsyncMagicalHost
     subscript(checkedMirrorDescendant key: String) -> Any { get }
     var hasPrimaryValue: Bool { get }
 
+    func createMigrations() -> Migrations
+
     init()
 }
 
@@ -30,5 +32,9 @@ public extension MagicObject {
             let _mirror = Mirror(reflecting: value)
             return "\(_mirror.subjectType)".hasPrefix("PrimaryMagicValue")
         }
+    }
+
+    func createMigrations() -> Migrations {
+        Migrations()
     }
 }
