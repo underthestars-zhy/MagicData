@@ -103,4 +103,19 @@ extension MagicData {
 
         return model
     }
+
+    func getModelStruct(_ object: MagicObject) throws -> Data {
+        let mirror = object.createMirror()
+
+        var structDictionay = [String : String]()
+
+        for (label, value) in mirror.children {
+            if let label {
+                let childMirror = Mirror(reflecting: value)
+                structDictionay[label] = childMirror.description
+            }
+        }
+
+        return try JSONEncoder().encode(structDictionay)
+    }
 }

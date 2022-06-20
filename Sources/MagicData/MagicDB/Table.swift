@@ -15,11 +15,15 @@ extension MagicData {
         let tableName = Expression<String>("table_name")
         let version = Expression<Int>("version")
         let zIndexCount = Expression<Int>("z_index_count")
+        let structure = Expression<Data>("structure")
+        let updating = Expression<Bool>("updating")
 
         try db.run(info.create(ifNotExists: true) { t in
             t.column(tableName, primaryKey: true)
             t.column(version)
             t.column(zIndexCount)
+            t.column(structure)
+            t.column(updating)
         })
     }
 
@@ -92,8 +96,10 @@ extension MagicData {
         let tableName = Expression<String>("table_name")
         let version = Expression<Int>("version")
         let zIndexCount = Expression<Int>("z_index_count")
+        let structure = Expression<Data>("structure")
+        let updating = Expression<Bool>("updating")
 
-        try db.run(info.insert(tableName <- Self.tableName(of: object), version <- 0, zIndexCount <- 0))
+        try db.run(info.insert(tableName <- Self.tableName(of: object), version <- 0, zIndexCount <- 0, structure <- try getModelStruct(object), updating <- false))
     }
 
     func getZIndexOfObject(_ object: some MagicObject) throws -> Int {
