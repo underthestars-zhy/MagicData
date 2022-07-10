@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SQLite
 
 public struct Migrations {
     let steps: [MigrationStep]
@@ -29,4 +30,10 @@ public struct Migrations {
     func needUpdate(_ version: Int) -> Bool {
         steps.count - 1 == version
     }
+
+//    func r2r(_ row: Row) -> Row {
+//        for step in steps {
+//
+//        }
+//    }
 }

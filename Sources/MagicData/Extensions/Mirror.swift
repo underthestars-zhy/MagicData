@@ -107,7 +107,7 @@ extension Mirror {
         return (mirror.children.first { (label: String?, value: Any) in
             label == "hostValue"
         }?.value as? MagicalValueHost)?.value.flatMap({ value in
-            value as? MagicalPrimaryValue
+            value as? (any MagicalPrimaryValue)
         })
     }
 }

@@ -47,7 +47,7 @@ extension MagicData {
         try getAllTable().contains(tableName)
     }
 
-    func createTable(_ object: some MagicObject) throws {
+    func createTable(_ object: some MagicObject, addToInfo: Bool = true) throws {
         if try tableExit(Self.tableName(of: object)) { return }
         let mirror = object.createMirror()
         let expressions = mirror.createExpresses()
@@ -90,7 +90,9 @@ extension MagicData {
             t.column(Expression<Int>("z_index"), unique: true)
         })
 
-        try addToTableInfo(object)
+        if addToInfo {
+            try addToTableInfo(object)
+        }
     }
 
     nonisolated static func tableName(of object: some MagicObject) -> String {
@@ -166,6 +168,16 @@ extension MagicData {
         }
 
         return query
+    }
+
+    func dropTable(_ object: MagicObject) throws {
+        let table = Table(Self.tableName(of: object))
+
+        try db.run(table.drop(ifExists: true))
+    }
+
+    func getRows(_ table: Table) throws -> [Row] {
+        return try db.prepare(table).map { $0 }
     }
 }
 
