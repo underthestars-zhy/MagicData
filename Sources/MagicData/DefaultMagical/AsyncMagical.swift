@@ -240,7 +240,7 @@ extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable &
 }
 
 extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable & MagicDataConvert, AsyncElement.Index == Int {
-    func randomValue(in range: Range<AsyncElement.Index>) async throws -> AsyncElement.Element? {
+    public func randomValue(in range: Range<AsyncElement.Index>) async throws -> AsyncElement.Element? {
         if let host, let magic {
             let values = try AsyncElement.create(host)
             if let value = values[range].randomElement() {
