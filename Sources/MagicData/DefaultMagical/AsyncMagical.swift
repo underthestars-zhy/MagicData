@@ -238,3 +238,30 @@ extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable &
         }
     }
 }
+
+extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable & MagicDataConvert, AsyncElement.Index == Int {
+    func randomValue(in range: Range<AsyncElement.Index>) async throws -> AsyncElement.Element? {
+        if let host, let magic {
+            let values = try AsyncElement.create(host)
+            if let value = values[range].randomElement() {
+                let Object = AsyncElement.getObject()
+                if value.0 == nil {
+                    // Array or Set
+                    if let object = try await AsyncElement.createObject(value.1, magic: magic, object: Object), let typeObject = object as? AsyncElement.Element {
+                        return typeObject
+                    } else {
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+        } else if let _value {
+            return _value[range].randomElement()
+        } else {
+            throw MagicError.missValue
+        }
+    }
+}

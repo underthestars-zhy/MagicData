@@ -1033,4 +1033,44 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertTrue(subs.map(\.value).map(\.uuid).contains(randomValue1))
     }
+
+    func test29() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var array: AsyncMagical<[Sub]>
+
+            init() {
+
+            }
+
+            init(_ array: [Sub]) {
+                self.array = .init(value: array)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var int: Int
+
+            init() {}
+
+            init(_ int: Int) { self.int = int }
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel([Sub(1), Sub(2), Sub(3)])
+
+        let random1 = try await instance.array.randomValue(in: 1..<2)?.int
+
+        XCTAssertEqual(random1, 2)
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let random2 = try await instanceCopy.array.randomValue(in: 1..<2)?.int
+
+        XCTAssertEqual(random2, 2)
+    }
 }

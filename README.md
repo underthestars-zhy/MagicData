@@ -187,7 +187,10 @@ struct TestModel: MagicObject {
 #### How to use
 
 ```swift
-try await instance.array.randomValue()?.uuid
+for try await item in try instanceCopy.array.createAsyncStream() {
+    res.append(item)
+}
+
 ```
 
 #### Random Value
@@ -201,9 +204,8 @@ try await instance.array.randomValue()?.uuid
 #### How to use
 
 ```swift
-for try await item in try instanceCopy.array.createAsyncStream() {
-    res.append(item)
-}
+try await instance.array.randomValue()?.uuid
+instance.array.randomValue(in: 1..<2)?.int // Onlt support when Index == Int
 ```
 
 ## Add/Update
