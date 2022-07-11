@@ -7,16 +7,16 @@
 
 import Foundation
 
-public struct AsyncMagical<Element: Magical>: Magical where Element: AsyncMagicalHostable {
+public struct AsyncMagical<AsyncElement: Magical>: Magical where AsyncElement: AsyncMagicalHostable {
     public static var type: MagicalType {
-        return Element.type
+        return AsyncElement.type
     }
 
     private let host: Any?
     private let magic: MagicData?
-    private var _value: Element?
+    private var _value: AsyncElement?
 
-    init(value: Element) {
+    init(value: AsyncElement) {
         self.host = nil
         self._value = value
         self.magic = nil
@@ -28,13 +28,13 @@ public struct AsyncMagical<Element: Magical>: Magical where Element: AsyncMagica
         self._value = nil
     }
 
-    public mutating func set(_ value: Element) {
+    public mutating func set(_ value: AsyncElement) {
         self._value = value
     }
 }
 
-extension AsyncMagical: MagicStringConvert where Element: MagicStringConvert {
-    public static func create(_ value: String?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+extension AsyncMagical: MagicStringConvert where AsyncElement: MagicStringConvert {
+    public static func create(_ value: String?, magic: MagicData) async throws -> AsyncMagical<AsyncElement>? {
         if let value {
             return self.init(host: value, magic: magic)
         } else {
@@ -52,10 +52,10 @@ extension AsyncMagical: MagicStringConvert where Element: MagicStringConvert {
         }
     }
 
-    public mutating func get() async throws -> Element {
+    public mutating func get() async throws -> AsyncElement {
         if let _value {
             return _value
-        } else if let host = host as? String, let magic, let value = try await Element.create(host, magic: magic) {
+        } else if let host = host as? String, let magic, let value = try await AsyncElement.create(host, magic: magic) {
             self._value = value
             return value
         } else {
@@ -64,8 +64,8 @@ extension AsyncMagical: MagicStringConvert where Element: MagicStringConvert {
     }
 }
 
-extension AsyncMagical: MagicDataConvert where Element: MagicDataConvert {
-    public static func create(_ value: Data?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+extension AsyncMagical: MagicDataConvert where AsyncElement: MagicDataConvert {
+    public static func create(_ value: Data?, magic: MagicData) async throws -> AsyncMagical<AsyncElement>? {
         if let value {
             return self.init(host: value, magic: magic)
         } else {
@@ -83,10 +83,10 @@ extension AsyncMagical: MagicDataConvert where Element: MagicDataConvert {
         }
     }
 
-    public func get() async throws -> Element {
+    public func get() async throws -> AsyncElement {
         if let _value {
             return _value
-        } else if let host = host as? Data, let magic, let value = try await Element.create(host, magic: magic) {
+        } else if let host = host as? Data, let magic, let value = try await AsyncElement.create(host, magic: magic) {
             return value
         } else {
             throw MagicError.missValue
@@ -94,8 +94,8 @@ extension AsyncMagical: MagicDataConvert where Element: MagicDataConvert {
     }
 }
 
-extension AsyncMagical: MagicIntConvert where Element: MagicIntConvert {
-    public static func create(_ value: Int?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+extension AsyncMagical: MagicIntConvert where AsyncElement: MagicIntConvert {
+    public static func create(_ value: Int?, magic: MagicData) async throws -> AsyncMagical<AsyncElement>? {
         if let value {
             return self.init(host: value, magic: magic)
         } else {
@@ -113,10 +113,10 @@ extension AsyncMagical: MagicIntConvert where Element: MagicIntConvert {
         }
     }
 
-    public func get() async throws -> Element {
+    public func get() async throws -> AsyncElement {
         if let _value {
             return _value
-        } else if let host = host as? Int, let magic, let value = try await Element.create(host, magic: magic) {
+        } else if let host = host as? Int, let magic, let value = try await AsyncElement.create(host, magic: magic) {
             return value
         } else {
             throw MagicError.missValue
@@ -124,8 +124,8 @@ extension AsyncMagical: MagicIntConvert where Element: MagicIntConvert {
     }
 }
 
-extension AsyncMagical: MagicDoubleConvert where Element: MagicDoubleConvert {
-    public static func create(_ value: Double?, magic: MagicData) async throws -> AsyncMagical<Element>? {
+extension AsyncMagical: MagicDoubleConvert where AsyncElement: MagicDoubleConvert {
+    public static func create(_ value: Double?, magic: MagicData) async throws -> AsyncMagical<AsyncElement>? {
         if let value {
             return self.init(host: value, magic: magic)
         } else {
@@ -143,11 +143,44 @@ extension AsyncMagical: MagicDoubleConvert where Element: MagicDoubleConvert {
         }
     }
 
-    public func get() async throws -> Element {
+    public func get() async throws -> AsyncElement {
         if let _value {
             return _value
-        } else if let host = host as? Double, let magic, let value = try await Element.create(host, magic: magic) {
+        } else if let host = host as? Double, let magic, let value = try await AsyncElement.create(host, magic: magic) {
             return value
+        } else {
+            throw MagicError.missValue
+        }
+    }
+}
+
+extension AsyncMagical where AsyncElement: Sequence & AsyncSequenceCreatable & MagicDataConvert {
+    func createAsyncStream() throws -> AsyncThrowingStream<AsyncElement.Element, Error> {
+        if let host, let magic {
+            let values = try AsyncElement.create(host)
+            let Object = AsyncElement.getObject()
+            return AsyncThrowingStream { continuation in
+                Task {
+                    do {
+                        for value in values {
+                            if value.0 == nil {
+                                // Array or Set
+                                if let object = try await AsyncElement.createObject(value.1, magic: magic, object: Object), let typeObject = object as? AsyncElement.Element {
+                                    continuation.yield(typeObject)
+                                }
+                            } else if let key = value.0 {
+                                // Dictionary
+                                if let object = try await AsyncElement.createObject(value.1, magic: magic, object: Object), let typeObject = (key: key, value: object) as? AsyncElement.Element {
+                                    continuation.yield(typeObject)
+                                }
+                            }
+                        }
+                        continuation.finish()
+                    } catch {
+                        continuation.finish(throwing: error)
+                    }
+                }
+            }
         } else {
             throw MagicError.missValue
         }

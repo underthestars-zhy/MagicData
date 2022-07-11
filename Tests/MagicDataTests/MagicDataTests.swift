@@ -859,4 +859,80 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertFalse(res)
     }
+
+    func test25() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var array: AsyncMagical<[Sub]>
+
+            init() {
+
+            }
+
+            init(_ array: [Sub]) {
+                self.array = .init(value: array)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {}
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel([Sub(), Sub(), Sub()])
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        var res = [Sub]()
+
+        for try await item in try instanceCopy.array.createAsyncStream() {
+            res.append(item)
+        }
+
+        XCTAssertEqual(res.count, 3)
+    }
+
+    func test26() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var array: AsyncMagical<[Int: Sub]>
+
+            init() {
+
+            }
+
+            init(_ array: [Int: Sub]) {
+                self.array = .init(value: array)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {}
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let instance = TestModel([1: Sub(), 2: Sub(), 3: Sub()])
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        var res = [(Int, Sub)]()
+
+        for try await item in try instanceCopy.array.createAsyncStream() {
+            res.append(item)
+        }
+
+        XCTAssertEqual(res.count, 3)
+
+        XCTAssertEqual(Set(res.map(\.0)), Set([1, 2, 3]))
+    }
 }

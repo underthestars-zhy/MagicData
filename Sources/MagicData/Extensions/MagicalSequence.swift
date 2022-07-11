@@ -21,9 +21,9 @@ extension Array: MagicalSequence where Element: MagicObject {
         try JSONDecoder().decode([Int].self, from: data)
     }
 }
-extension AsyncMagical: MagicalSequence where Element: MagicalSequence {
+extension AsyncMagical: MagicalSequence where AsyncElement: MagicalSequence {
     static func allID(_ data: Data) throws -> [Int] {
-        if let Dict = Element.self as? ObjectDictionary.Type {
+        if let Dict = AsyncElement.self as? ObjectDictionary.Type {
             return try Dict.getAllID(data)
         } else {
             return try JSONDecoder().decode([Int].self, from: data)
