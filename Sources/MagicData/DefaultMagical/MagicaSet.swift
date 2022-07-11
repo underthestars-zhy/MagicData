@@ -106,13 +106,35 @@ extension MagicalSet: ExpressibleByArrayLiteral {
 }
 
 extension MagicalSet: Sequence {
+    public typealias Element = Element
+
     public func makeIterator() -> IndexingIterator<[Element]> {
         return self.set.map(\.0).makeIterator()
     }
 }
 
-public extension MagicalSet {
-    var count: Int {
-        return self.set.count
+// MARK: - Not Stable
+extension MagicalSet: Collection {
+    public typealias Index = Int
+
+    public var startIndex: Index { self.set.startIndex }
+    public var endIndex: Index { self.set.endIndex }
+
+    public subscript(position: Index) -> Element {
+        get {
+            return self.set[position].0
+        }
+    }
+
+    public func index(after i: Index) -> Index {
+        return i + 1
     }
 }
+
+extension MagicalSet: BidirectionalCollection {
+    public func index(before i: Index) -> Index {
+        return i - 1
+    }
+}
+
+extension MagicalSet: RandomAccessCollection {}

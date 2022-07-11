@@ -953,4 +953,82 @@ final class MagicDataTests: XCTestCase {
 
         XCTAssertEqual(Set(res.map(\.0)), Set([1, 2, 3]))
     }
+
+    func test27() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var array: AsyncMagical<[Sub]>
+
+            init() {
+
+            }
+
+            init(_ array: [Sub]) {
+                self.array = .init(value: array)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {}
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let subs = [Sub(), Sub(), Sub()]
+
+        let instance = TestModel(subs)
+
+        let randomValue = try await instance.array.randomValue()?.uuid ?? UUID()
+
+        XCTAssertTrue(subs.map(\.uuid).contains(randomValue))
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let randomValue1 = try await instanceCopy.array.randomValue()?.uuid ?? UUID()
+
+        XCTAssertTrue(subs.map(\.uuid).contains(randomValue1))
+    }
+
+    func test28() async throws {
+        struct TestModel: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+            @MagicValue var array: AsyncMagical<[Int: Sub]>
+
+            init() {
+
+            }
+
+            init(_ array: [Int: Sub]) {
+                self.array = .init(value: array)
+            }
+        }
+
+        struct Sub: MagicObject {
+            @PrimaryMagicValue var uuid: UUID
+
+            init() {}
+        }
+
+        let magic = try await MagicData(type: .temporary)
+
+        let subs = [1: Sub(), 2: Sub(), 3: Sub()]
+
+        let instance = TestModel(subs)
+
+        let randomValue = try await instance.array.randomValue()?.value.uuid ?? UUID()
+
+        XCTAssertTrue(subs.map(\.value).map(\.uuid).contains(randomValue))
+
+        try await magic.update(instance)
+
+        let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
+
+        let randomValue1 = try await instanceCopy.array.randomValue()?.value.uuid ?? UUID()
+
+        XCTAssertTrue(subs.map(\.value).map(\.uuid).contains(randomValue1))
+    }
 }

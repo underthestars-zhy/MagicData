@@ -187,6 +187,20 @@ struct TestModel: MagicObject {
 #### How to use
 
 ```swift
+try await instance.array.randomValue()?.uuid
+```
+
+#### Random Value
+
+#### Support List
+
+* Array where Element: MagicObject
+* MagicalSet
+* Dictionay where Key: Codable, Value: MagicObject
+
+#### How to use
+
+```swift
 for try await item in try instanceCopy.array.createAsyncStream() {
     res.append(item)
 }
@@ -298,6 +312,8 @@ struct Sub: MagicObject {
 ```
 
 `MagicalSet` just like a default set, but it only can store `MagicObject`.
+
+**Although `MagicalSet` is a `Collection`, but I strongly suggest you that you shouldn't use it.**
 
 #### Arrary
 
@@ -414,133 +430,3 @@ Every time you fetch the object, we will remove the item that has the same `zInd
 ZIndex is `MagicalData`'s own primary key. It will automatically be added to your table. We use this key to judge whether the two objects are equal, or whether the object is in the database.
 ZIndex is `nil` when the object hasn't saved.<br>
 You cannot get the ZIndex through the `MagicalData`, but maybe we will make it public in the future.
-
-## Compare With Realm
-
-* Realm Version: 10.28.0 (with some samll changes)
-* Platform: iOS16
-* Swift Version: 5.7
-* Device: iPhone13 Pro
-
-### Create 1000 objects.
-
-* Realm
-    - Time: 2.3450679779052734s
-    - Memory: 38.1mb
-    - Code Line: 50
-
-* MagicData
-    - Time: 1.1123838424682617s
-    - Memory: 32.5mb
-    - Code Line: 48
-
-### Create 10000 objects.
-
-* Realm
-    - Time: 30.317097187042236s
-    - Memory: 41.4mb
-    - Code Line: 50
-
-* MagicData
-    - Time: 11.498681783676147s
-    - Memory: 32.4mb
-    - Code Line: 48
-
-### Remove 11000 objects
-
-* Realm
-    - Time: 0.05919814109802246s
-    - Memory: 39mb
-    - Code Line: 48
-
-* MagicData
-    - Time: 0.018190860748291016s
-    - Memory: 32.1mb
-    - Code Line: 46
-
-
-### Code Example:
-
-```swift
-import SwiftUI
-import MagicData
-
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .task {
-            let start = Date()
-            let magic = try! await MagicData()
-            try! await magic.removeAll(of: FileModel.self)
-            let end = Date()
-            print(end.timeIntervalSince1970 - start.timeIntervalSince1970)
-        }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-
-struct FileModel: MagicObject {
-    @PrimaryMagicValue var uuid: UUID
-
-    @MagicValue var name: String
-
-    init() {}
-
-    init(name: String) {
-        self.name = name
-    }
-}
-```
-
-```swift
-import SwiftUI
-import RealmSwift
-
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .task {
-            let start = Date()
-            let realm = try! await Realm()
-            try! realm.write({
-                realm.deleteAll()
-            })
-            let end = Date()
-            print(end.timeIntervalSince1970 - start.timeIntervalSince1970)
-        }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
-
-class FileModel: Object {
-    @Persisted(primaryKey: true) var id: UUID
-
-    @Persisted var name: String
-
-    convenience init(name: String) {
-        self.init()
-        id = UUID()
-        self.name = name
-    }
-}
-```

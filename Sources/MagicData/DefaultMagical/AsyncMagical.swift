@@ -154,7 +154,7 @@ extension AsyncMagical: MagicDoubleConvert where AsyncElement: MagicDoubleConver
     }
 }
 
-extension AsyncMagical where AsyncElement: Sequence & AsyncSequenceCreatable & MagicDataConvert {
+extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable & MagicDataConvert {
     func createAsyncStream() throws -> AsyncThrowingStream<AsyncElement.Element, Error> {
         if let host, let magic {
             let values = try AsyncElement.create(host)
@@ -188,6 +188,38 @@ extension AsyncMagical where AsyncElement: Sequence & AsyncSequenceCreatable & M
                 }
                 continuation.finish()
             }
+        } else {
+            throw MagicError.missValue
+        }
+    }
+
+    func randomValue() async throws -> AsyncElement.Element? {
+        if let host, let magic {
+            let values = try AsyncElement.create(host)
+            if let value = values.randomElement() {
+                let Object = AsyncElement.getObject()
+                if value.0 == nil {
+                    // Array or Set
+                    if let object = try await AsyncElement.createObject(value.1, magic: magic, object: Object), let typeObject = object as? AsyncElement.Element {
+                        return typeObject
+                    } else {
+                        return nil
+                    }
+                } else if let key = value.0 {
+                    // Dictionary
+                    if let object = try await AsyncElement.createObject(value.1, magic: magic, object: Object), let typeObject = (key: key, value: object) as? AsyncElement.Element {
+                        return typeObject
+                    } else {
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+        } else if let _value {
+            return _value.randomElement()
         } else {
             throw MagicError.missValue
         }
