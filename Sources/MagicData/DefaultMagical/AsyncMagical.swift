@@ -181,6 +181,13 @@ extension AsyncMagical where AsyncElement: Sequence & AsyncSequenceCreatable & M
                     }
                 }
             }
+        } else if let _value {
+            return AsyncThrowingStream { continuation in
+                for item in _value {
+                    continuation.yield(item)
+                }
+                continuation.finish()
+            }
         } else {
             throw MagicError.missValue
         }

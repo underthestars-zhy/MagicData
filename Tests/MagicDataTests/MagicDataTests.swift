@@ -884,6 +884,14 @@ final class MagicDataTests: XCTestCase {
 
         let instance = TestModel([Sub(), Sub(), Sub()])
 
+        var _res = [Sub]()
+
+        for try await item in try instance.array.createAsyncStream() {
+            _res.append(item)
+        }
+
+        XCTAssertEqual(_res.count, 3)
+
         try await magic.update(instance)
 
         let instanceCopy = try await magic.object(of: TestModel.self, primary: instance.uuid)
@@ -920,6 +928,16 @@ final class MagicDataTests: XCTestCase {
         let magic = try await MagicData(type: .temporary)
 
         let instance = TestModel([1: Sub(), 2: Sub(), 3: Sub()])
+
+        var _res = [(Int, Sub)]()
+
+        for try await item in try instance.array.createAsyncStream() {
+            _res.append(item)
+        }
+
+        XCTAssertEqual(_res.count, 3)
+
+        XCTAssertEqual(Set(_res.map(\.0)), Set([1, 2, 3]))
 
         try await magic.update(instance)
 
