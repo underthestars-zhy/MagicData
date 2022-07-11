@@ -176,6 +176,22 @@ struct TestModel: MagicObject {
 * Get Value: `try await instanceCopy.asset.get()`
 * Set Value: `instance.asset.set(.init(value: "Hello"))`
 
+### AsyncStream
+
+#### Support List
+
+* Array where Element: MagicObject
+* MagicalSet
+* Dictionay where Key: Codable, Value: MagicObject
+
+#### How to use
+
+```swift
+for try await item in try instanceCopy.array.createAsyncStream() {
+    res.append(item)
+}
+```
+
 ## Add/Update
 
 ```swift
