@@ -155,7 +155,7 @@ extension AsyncMagical: MagicDoubleConvert where AsyncElement: MagicDoubleConver
 }
 
 extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable & MagicDataConvert {
-    func createAsyncStream() throws -> AsyncThrowingStream<AsyncElement.Element, Error> {
+    public func createAsyncStream() throws -> AsyncThrowingStream<AsyncElement.Element, Error> {
         if let host, let magic {
             let values = try AsyncElement.create(host)
             let Object = AsyncElement.getObject()
@@ -193,7 +193,7 @@ extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable &
         }
     }
 
-    func randomValue() async throws -> AsyncElement.Element? {
+    public func randomValue() async throws -> AsyncElement.Element? {
         if let host, let magic {
             let values = try AsyncElement.create(host)
             if let value = values.randomElement() {
@@ -222,6 +222,19 @@ extension AsyncMagical where AsyncElement: Collection & AsyncSequenceCreatable &
             return _value.randomElement()
         } else {
             throw MagicError.missValue
+        }
+    }
+
+    public var count: Int {
+        get throws {
+            if let host {
+                let values = try AsyncElement.create(host)
+                return values.count
+            } else if let _value {
+                return _value.count
+            } else {
+                throw MagicError.missValue
+            }
         }
     }
 }

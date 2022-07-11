@@ -884,6 +884,8 @@ final class MagicDataTests: XCTestCase {
 
         let instance = TestModel([Sub(), Sub(), Sub()])
 
+        XCTAssertEqual(try instance.array.count, 3)
+
         var _res = [Sub]()
 
         for try await item in try instance.array.createAsyncStream() {
