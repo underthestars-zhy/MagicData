@@ -16,7 +16,7 @@ public struct AsyncMagical<AsyncElement: Magical>: Magical where AsyncElement: A
     private let magic: MagicData?
     private var _value: AsyncElement?
 
-    init(value: AsyncElement) {
+    public init(value: AsyncElement) {
         self.host = nil
         self._value = value
         self.magic = nil
