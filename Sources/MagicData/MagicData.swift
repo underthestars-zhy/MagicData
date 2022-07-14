@@ -95,15 +95,20 @@ public class MagicData {
             }
 
             guard let primaryValue = object.createMirror().getValue(by: primaryExpress) as? any CombineMagicalPrimaryValueWithMagical else { throw MagicError.missPrimary  }
-            
 
             if try await has(of: type(of: object), primary: primaryValue) {
                 let query: Table = try await createQueryTable(primaryExpress, primary: primaryValue, table: table)
 
                 try await db.run(query.update(createSetters(of: object)))
 
-                guard let _zIndex = Self.getZIndex(of: object) else { throw MagicError.missValue }
-                zIndex = _zIndex
+                if let _zIndex = Self.getZIndex(of: object) {
+                    zIndex = _zIndex
+                } else if let _zIndex = Self.getZIndex(of: try await self.object(of: type(of: object), primary: primaryValue)) {
+                    zIndex = _zIndex
+                } else {
+                    throw MagicError.missZIndex
+                }
+
             } else {
                 zIndex = try getZIndexAndUpdate(object)
                 try await db.run(table.insert(or: .replace, createSetters(of: object) + [(Expression<Int>("z_index") <- zIndex)]))

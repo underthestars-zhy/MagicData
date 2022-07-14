@@ -12,7 +12,6 @@ extension Array: Magical, MagicDataConvert where Element: Codable {
         if let Magic = Element.self as? MagicObject.Type {
             if let value = value {
                 let zIndexs = try JSONDecoder().decode([Int].self, from: value)
-                print(zIndexs)
                 return try await zIndexs.asyncCompactMap { int in
                     try await Magic.create(int, magic: magic) as? Element
                 }
