@@ -31,9 +31,11 @@ public struct Migrations {
         steps.count - 1 == version
     }
 
-//    func r2r(_ row: Row) -> Row {
-//        for step in steps {
-//
-//        }
-//    }
+    func r2r(_ row: Row) -> Row {
+        var row = row
+        for step in steps {
+            row = step.modifyRow(row)
+        }
+        return row
+    }
 }
