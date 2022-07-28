@@ -21,4 +21,5 @@ public enum MagicError: Error {
     case missData
     case cannotGetTableInfo
     case missZIndex
+    case cannotFindValueInRow(name: String)
 }

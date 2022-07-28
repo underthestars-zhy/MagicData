@@ -31,10 +31,10 @@ public struct Migrations {
         steps.count - 1 == version
     }
 
-    func r2r(_ row: Row) -> Row {
+    func r2r(_ row: Row) throws -> Row {
         var row = row
         for step in steps {
-            row = step.modifyRow(row)
+            row = try step.modifyRow(row)
         }
         return row
     }

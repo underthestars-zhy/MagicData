@@ -8,6 +8,6 @@
 import Foundation
 
 public enum Changes {
-    case add(name: String)
-    case delete(name: String)
+    case addOptionalValue(name: String)
+    case deleteValue(name: String)
 }

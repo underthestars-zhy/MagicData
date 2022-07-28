@@ -55,7 +55,7 @@ extension MagicData {
             let rows = try getRows(.init(backupName))
 
             for row in rows {
-//                let newRow = migrations.r2r(row)
+                let newRow = try migrations.r2r(row)
             }
         }
     }
